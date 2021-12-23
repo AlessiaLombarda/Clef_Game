@@ -8,15 +8,29 @@
  *
  * @author lomba
  */
-public class Game extends javax.swing.JFrame {
+import jm.JMC;
+import jm.constants.*;
+import jm.music.data.*;
+import jm.util.Play;
+import jm.util.View;
+
+public class Game extends javax.swing.JFrame implements JMC {
     
-    private int level;
+    private int level=1;
+    private int score=0;
+    private int bpm;
+    private int error=0;
+    
+    private int currentNote;
+    private int[] pitch;// = new int[4];
+    
     /**
-     * Creates new form Gioco
+     * Creates new form Game
      */
     public Game(int level) {
         this.level = level;
         initComponents();
+        generateNote();
     }
 
     /**
@@ -40,8 +54,15 @@ public class Game extends javax.swing.JFrame {
         bb_button = new javax.swing.JButton();
         a_button = new javax.swing.JButton();
         b_button = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        score_label = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        bpm_label = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        level_label = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(250, 380));
         setMinimumSize(new java.awt.Dimension(250, 380));
         setPreferredSize(new java.awt.Dimension(250, 380));
         setSize(new java.awt.Dimension(250, 380));
@@ -155,55 +176,125 @@ public class Game extends javax.swing.JFrame {
         getContentPane().add(b_button);
         b_button.setBounds(190, 190, 30, 130);
 
+        jLabel1.setText("Score:");
+        getContentPane().add(jLabel1);
+        jLabel1.setBounds(10, 10, 30, 13);
+
+        score_label.setText("0");
+        getContentPane().add(score_label);
+        score_label.setBounds(40, 10, 10, 13);
+
+        jLabel2.setText("BPM:");
+        getContentPane().add(jLabel2);
+        jLabel2.setBounds(160, 10, 23, 13);
+        getContentPane().add(bpm_label);
+        bpm_label.setBounds(190, 10, 10, 10);
+
+        jLabel3.setText("Level:");
+        getContentPane().add(jLabel3);
+        jLabel3.setBounds(70, 10, 27, 13);
+
+        level_label.setText("1");
+        getContentPane().add(level_label);
+        level_label.setBounds(100, 10, 10, 13);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void e_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_e_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==E0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_e_buttonActionPerformed
 
     private void eb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eb_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==EF0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_eb_buttonActionPerformed
 
     private void c_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==C0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_c_buttonActionPerformed
 
     private void d_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_d_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==D0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_d_buttonActionPerformed
 
     private void db_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_db_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==DF0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_db_buttonActionPerformed
 
     private void f_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_f_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==F0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_f_buttonActionPerformed
 
     private void cb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==CF0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_cb_buttonActionPerformed
 
     private void g_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_g_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==G0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_g_buttonActionPerformed
 
     private void ab_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ab_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==AF0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_ab_buttonActionPerformed
 
     private void a_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_a_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==A0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_a_buttonActionPerformed
 
     private void bb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bb_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==BF0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_bb_buttonActionPerformed
 
     private void b_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buttonActionPerformed
-        // TODO add your handling code here:
+        if (currentNote==B0){
+            addScore();
+        }else{
+            addError();
+        }
     }//GEN-LAST:event_b_buttonActionPerformed
 
     /**
@@ -237,9 +328,27 @@ public class Game extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Game(1).setVisible(true);
+                /*new Game(1).setVisible(true);
+                int[] pitch = {C0,B0,F0,A0};
+                double[] durations = {C,C,C,C};
+                Phrase phrase = new Phrase();
+                phrase.addNoteList(pitch,durations);
+                View.show(phrase);*/
             }
         });
+    }
+    
+    private void generateNote(){
+        //DA CAMBIARE
+        int []pitch2 = {C0,B0,F0,A0};
+        this.pitch = pitch2;
+        
+        this.currentNote = pitch[0];
+        
+        double[] durations = {C,C,C,C};
+        Phrase phrase = new Phrase();
+        phrase.addNoteList(pitch2,durations);
+        View.notate(phrase);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -247,6 +356,7 @@ public class Game extends javax.swing.JFrame {
     private javax.swing.JButton ab_button;
     private javax.swing.JButton b_button;
     private javax.swing.JButton bb_button;
+    private javax.swing.JLabel bpm_label;
     private javax.swing.JButton c_button;
     private javax.swing.JButton cb_button;
     private javax.swing.JButton d_button;
@@ -255,5 +365,23 @@ public class Game extends javax.swing.JFrame {
     private javax.swing.JButton eb_button;
     private javax.swing.JButton f_button;
     private javax.swing.JButton g_button;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel level_label;
+    private javax.swing.JLabel score_label;
     // End of variables declaration//GEN-END:variables
+
+    private void addScore() {
+        //this.score++;
+        score_label.setText(Integer.toString(++score));
+        //GENERA NOTA NUOVA SUCCESSIVA
+        this.currentNote = B0;
+    }
+
+    private void addError() {
+        this.error++;
+        //AGGIUNGERE GESTIONE ERRORI
+        score_label.setText(Integer.toString(--score));
+    }
 }
