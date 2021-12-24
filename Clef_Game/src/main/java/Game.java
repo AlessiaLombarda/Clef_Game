@@ -6,8 +6,10 @@
 
 /**
  *
- * @author lomba
+ * @author alessia lombarda e andrea valota
  */
+import java.util.ArrayList;
+import java.util.Random;
 import jm.JMC;
 import jm.constants.*;
 import jm.music.data.*;
@@ -20,9 +22,17 @@ public class Game extends javax.swing.JFrame implements JMC {
     private int score=0;
     private int bpm;
     private int error=0;
-    
+            
     private int currentNote;
-    private int[] pitch;// = new int[4];
+    private ArrayList<Integer> pitch = new ArrayList<Integer>();
+    
+    private int[] easyNotes = {C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5};
+    private int easyG = 4;
+    private int currentIndex;
+    
+    private int[] mediumNotes = {C4,CS4,DF4,D4,DS4,EF4,E4,F4,FS4,GF4,G4,GS4,AF4,A4,AS4,BF4,B4,C5,CS5,DF5,D5,DS5,EF5,E5,F5,FS5,GF5,G5,GS5,AF5,A5,AS5,BF5,B5};
+    private int mediumG = 10;
+    //creare difficultNotes con double accidentals
     
     /**
      * Creates new form Game
@@ -30,7 +40,7 @@ public class Game extends javax.swing.JFrame implements JMC {
     public Game(int level) {
         this.level = level;
         initComponents();
-        generateNote();
+        generateFirstNote();
     }
 
     /**
@@ -62,10 +72,11 @@ public class Game extends javax.swing.JFrame implements JMC {
         level_label = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(250, 380));
-        setMinimumSize(new java.awt.Dimension(250, 380));
-        setPreferredSize(new java.awt.Dimension(250, 380));
-        setSize(new java.awt.Dimension(250, 380));
+        setMaximumSize(new java.awt.Dimension(385, 480));
+        setMinimumSize(new java.awt.Dimension(385, 480));
+        setPreferredSize(new java.awt.Dimension(385, 480));
+        setResizable(false);
+        setSize(new java.awt.Dimension(385, 480));
         getContentPane().setLayout(null);
 
         eb_button.setBackground(new java.awt.Color(0, 0, 0));
@@ -75,7 +86,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(eb_button);
-        eb_button.setBounds(60, 180, 19, 77);
+        eb_button.setBounds(100, 230, 30, 130);
 
         e_button.setBackground(new java.awt.Color(255, 255, 255));
         e_button.addActionListener(new java.awt.event.ActionListener() {
@@ -84,7 +95,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(e_button);
-        e_button.setBounds(70, 190, 30, 130);
+        e_button.setBounds(110, 230, 50, 200);
 
         db_button.setBackground(new java.awt.Color(0, 0, 0));
         db_button.addActionListener(new java.awt.event.ActionListener() {
@@ -93,7 +104,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(db_button);
-        db_button.setBounds(30, 180, 19, 77);
+        db_button.setBounds(50, 230, 30, 130);
 
         c_button.setBackground(new java.awt.Color(255, 255, 255));
         c_button.addActionListener(new java.awt.event.ActionListener() {
@@ -102,7 +113,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(c_button);
-        c_button.setBounds(10, 190, 30, 130);
+        c_button.setBounds(10, 230, 50, 200);
 
         d_button.setBackground(new java.awt.Color(255, 255, 255));
         d_button.addActionListener(new java.awt.event.ActionListener() {
@@ -111,7 +122,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(d_button);
-        d_button.setBounds(40, 190, 30, 130);
+        d_button.setBounds(60, 230, 50, 200);
 
         cb_button.setBackground(new java.awt.Color(0, 0, 0));
         cb_button.addActionListener(new java.awt.event.ActionListener() {
@@ -120,7 +131,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(cb_button);
-        cb_button.setBounds(120, 180, 19, 77);
+        cb_button.setBounds(200, 230, 30, 130);
 
         f_button.setBackground(new java.awt.Color(255, 255, 255));
         f_button.addActionListener(new java.awt.event.ActionListener() {
@@ -129,7 +140,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(f_button);
-        f_button.setBounds(100, 190, 30, 130);
+        f_button.setBounds(160, 230, 50, 200);
 
         ab_button.setBackground(new java.awt.Color(0, 0, 0));
         ab_button.addActionListener(new java.awt.event.ActionListener() {
@@ -138,7 +149,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(ab_button);
-        ab_button.setBounds(150, 180, 19, 77);
+        ab_button.setBounds(250, 230, 30, 130);
 
         g_button.setBackground(new java.awt.Color(255, 255, 255));
         g_button.addActionListener(new java.awt.event.ActionListener() {
@@ -147,7 +158,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(g_button);
-        g_button.setBounds(130, 190, 30, 130);
+        g_button.setBounds(210, 230, 50, 200);
 
         bb_button.setBackground(new java.awt.Color(0, 0, 0));
         bb_button.addActionListener(new java.awt.event.ActionListener() {
@@ -156,7 +167,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(bb_button);
-        bb_button.setBounds(180, 180, 19, 77);
+        bb_button.setBounds(300, 230, 30, 130);
 
         a_button.setBackground(new java.awt.Color(255, 255, 255));
         a_button.addActionListener(new java.awt.event.ActionListener() {
@@ -165,7 +176,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(a_button);
-        a_button.setBounds(160, 190, 30, 130);
+        a_button.setBounds(260, 230, 50, 200);
 
         b_button.setBackground(new java.awt.Color(255, 255, 255));
         b_button.addActionListener(new java.awt.event.ActionListener() {
@@ -174,29 +185,29 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
         getContentPane().add(b_button);
-        b_button.setBounds(190, 190, 30, 130);
+        b_button.setBounds(310, 230, 50, 200);
 
         jLabel1.setText("Score:");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(10, 10, 30, 13);
+        jLabel1.setBounds(20, 10, 50, 20);
 
         score_label.setText("0");
         getContentPane().add(score_label);
-        score_label.setBounds(40, 10, 10, 13);
+        score_label.setBounds(80, 10, 30, 20);
 
         jLabel2.setText("BPM:");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(160, 10, 23, 13);
+        jLabel2.setBounds(280, 10, 40, 20);
         getContentPane().add(bpm_label);
-        bpm_label.setBounds(190, 10, 10, 10);
+        bpm_label.setBounds(320, 10, 30, 20);
 
         jLabel3.setText("Level:");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(70, 10, 27, 13);
+        jLabel3.setBounds(150, 10, 40, 20);
 
         level_label.setText("1");
         getContentPane().add(level_label);
-        level_label.setBounds(100, 10, 10, 13);
+        level_label.setBounds(200, 10, 30, 20);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -207,6 +218,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         }else{
             addError();
         }
+
     }//GEN-LAST:event_e_buttonActionPerformed
 
     private void eb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eb_buttonActionPerformed
@@ -337,19 +349,6 @@ public class Game extends javax.swing.JFrame implements JMC {
             }
         });
     }
-    
-    private void generateNote(){
-        //DA CAMBIARE
-        int []pitch2 = {C0,B0,F0,A0};
-        this.pitch = pitch2;
-        
-        this.currentNote = pitch[0];
-        
-        double[] durations = {C,C,C,C};
-        Phrase phrase = new Phrase();
-        phrase.addNoteList(pitch2,durations);
-        View.notate(phrase);
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton a_button;
@@ -373,15 +372,91 @@ public class Game extends javax.swing.JFrame implements JMC {
     // End of variables declaration//GEN-END:variables
 
     private void addScore() {
+        
         //this.score++;
         score_label.setText(Integer.toString(++score));
+        
         //GENERA NOTA NUOVA SUCCESSIVA
-        this.currentNote = B0;
+        generateNote();
     }
 
     private void addError() {
         this.error++;
+        //no score sottozero
         //AGGIUNGERE GESTIONE ERRORI
         score_label.setText(Integer.toString(--score));
+    }
+    
+    //generazione inizio livello
+    private void generateFirstNote() {
+        int numNote = 3 - (this.level-1)/4;
+        int grades = this.level;
+        
+        //add first G4
+        this.pitch.add(G4);
+        
+        int[] ourNotes;
+        int ourG;
+        
+        if(this.level<5){
+            ourNotes = easyNotes;
+            ourG = easyG;
+        } else if(this.level<9){
+            ourNotes = mediumNotes;
+            ourG = mediumG;
+        } else {
+            //sostituire con difficultNotes
+            ourNotes = easyNotes;
+            ourG = easyG;
+        }
+        
+        this.currentIndex = ourG;
+        
+        //sistema per livelli non facili
+        for(int i=0; i<numNote-1; i++){         
+            generateIndex(grades, ourNotes);
+            this.pitch.add(ourNotes[currentIndex]);
+        }
+    
+        this.currentNote = pitch.get(0);
+        System.out.println(this.pitch.toString());
+    }
+    
+    private void generateNote(){
+        int[] ourNotes;
+        
+        if(this.level<5)
+            ourNotes = easyNotes;
+        else if(this.level<9)
+            ourNotes = mediumNotes;
+        else {
+            //sostituire con difficultNotes
+            ourNotes = easyNotes;
+        }
+        
+        int grades = this.level;
+        this.pitch.remove(0);
+    
+        generateIndex(grades, ourNotes);
+        
+        this.pitch.add(ourNotes[currentIndex]);
+        this.currentNote = pitch.get(0);
+    }
+
+    private void generateIndex(int grades, int[] ourNotes) {
+        Random r = new Random();
+        int low = -grades;
+        int high = grades+1;
+        int res = r.nextInt(high-low)+low;
+        this.currentIndex = currentIndex+res;
+            
+        if(this.currentIndex<0){
+            this.currentIndex = 0;
+        }
+            
+        if(this.currentIndex>ourNotes.length-1){
+            this.currentIndex = ourNotes.length-1;
+        }
+        
     }
 }
