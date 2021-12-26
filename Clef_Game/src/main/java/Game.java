@@ -8,8 +8,13 @@
  *
  * @author alessia lombarda e andrea valota
  */
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import jm.JMC;
 import jm.constants.*;
 import jm.music.data.*;
@@ -39,7 +44,45 @@ public class Game extends javax.swing.JFrame implements JMC {
      */
     public Game(int level) {
         this.level = level;
+        
         initComponents();
+        
+        c_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("Q"), "Q");
+        c_button.getActionMap().put("Q", new NoteAction(C0));
+        
+        db_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("2"), "2");
+        db_button.getActionMap().put("2", new NoteAction(DF0));
+        
+        d_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), "W");
+        d_button.getActionMap().put("W", new NoteAction(D0));
+        
+        eb_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("3"), "3");
+        eb_button.getActionMap().put("3", new NoteAction(EF0));
+        
+        e_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("E"), "E");
+        e_button.getActionMap().put("E", new NoteAction(E0));
+        
+        f_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("R"), "R");
+        f_button.getActionMap().put("R", new NoteAction(F0));
+        
+        gb_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("5"), "5");
+        gb_button.getActionMap().put("5", new NoteAction(GF0));
+        
+        g_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("T"), "T");
+        g_button.getActionMap().put("T", new NoteAction(G0));
+        
+        ab_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("6"), "6");
+        ab_button.getActionMap().put("6", new NoteAction(AF0));
+        
+        a_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("Y"), "Y");
+        a_button.getActionMap().put("Y", new NoteAction(A0));
+        
+        bb_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("7"), "7");
+        bb_button.getActionMap().put("7", new NoteAction(BF0));
+        
+        b_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("U"), "U");
+        b_button.getActionMap().put("U", new NoteAction(B0));
+        
         generateFirstNote();
     }
 
@@ -57,7 +100,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         db_button = new javax.swing.JButton();
         c_button = new javax.swing.JButton();
         d_button = new javax.swing.JButton();
-        cb_button = new javax.swing.JButton();
+        gb_button = new javax.swing.JButton();
         f_button = new javax.swing.JButton();
         ab_button = new javax.swing.JButton();
         g_button = new javax.swing.JButton();
@@ -80,6 +123,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         getContentPane().setLayout(null);
 
         eb_button.setBackground(new java.awt.Color(0, 0, 0));
+        eb_button.setFocusable(false);
         eb_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 eb_buttonActionPerformed(evt);
@@ -89,6 +133,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         eb_button.setBounds(100, 230, 30, 130);
 
         e_button.setBackground(new java.awt.Color(255, 255, 255));
+        e_button.setFocusable(false);
         e_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 e_buttonActionPerformed(evt);
@@ -98,6 +143,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         e_button.setBounds(110, 230, 50, 200);
 
         db_button.setBackground(new java.awt.Color(0, 0, 0));
+        db_button.setFocusable(false);
         db_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 db_buttonActionPerformed(evt);
@@ -107,6 +153,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         db_button.setBounds(50, 230, 30, 130);
 
         c_button.setBackground(new java.awt.Color(255, 255, 255));
+        c_button.setFocusable(false);
         c_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 c_buttonActionPerformed(evt);
@@ -116,6 +163,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         c_button.setBounds(10, 230, 50, 200);
 
         d_button.setBackground(new java.awt.Color(255, 255, 255));
+        d_button.setFocusable(false);
         d_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 d_buttonActionPerformed(evt);
@@ -124,16 +172,18 @@ public class Game extends javax.swing.JFrame implements JMC {
         getContentPane().add(d_button);
         d_button.setBounds(60, 230, 50, 200);
 
-        cb_button.setBackground(new java.awt.Color(0, 0, 0));
-        cb_button.addActionListener(new java.awt.event.ActionListener() {
+        gb_button.setBackground(new java.awt.Color(0, 0, 0));
+        gb_button.setFocusable(false);
+        gb_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_buttonActionPerformed(evt);
+                gb_buttonActionPerformed(evt);
             }
         });
-        getContentPane().add(cb_button);
-        cb_button.setBounds(200, 230, 30, 130);
+        getContentPane().add(gb_button);
+        gb_button.setBounds(200, 230, 30, 130);
 
         f_button.setBackground(new java.awt.Color(255, 255, 255));
+        f_button.setFocusable(false);
         f_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 f_buttonActionPerformed(evt);
@@ -143,6 +193,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         f_button.setBounds(160, 230, 50, 200);
 
         ab_button.setBackground(new java.awt.Color(0, 0, 0));
+        ab_button.setFocusable(false);
         ab_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ab_buttonActionPerformed(evt);
@@ -152,6 +203,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         ab_button.setBounds(250, 230, 30, 130);
 
         g_button.setBackground(new java.awt.Color(255, 255, 255));
+        g_button.setFocusable(false);
         g_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 g_buttonActionPerformed(evt);
@@ -161,6 +213,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         g_button.setBounds(210, 230, 50, 200);
 
         bb_button.setBackground(new java.awt.Color(0, 0, 0));
+        bb_button.setFocusable(false);
         bb_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bb_buttonActionPerformed(evt);
@@ -170,6 +223,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         bb_button.setBounds(300, 230, 30, 130);
 
         a_button.setBackground(new java.awt.Color(255, 255, 255));
+        a_button.setFocusable(false);
         a_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 a_buttonActionPerformed(evt);
@@ -179,6 +233,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         a_button.setBounds(260, 230, 50, 200);
 
         b_button.setBackground(new java.awt.Color(255, 255, 255));
+        b_button.setFocusable(false);
         b_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_buttonActionPerformed(evt);
@@ -213,101 +268,61 @@ public class Game extends javax.swing.JFrame implements JMC {
     }// </editor-fold>//GEN-END:initComponents
 
     private void e_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_e_buttonActionPerformed
-        if (currentNote==E0){
-            addScore();
-        }else{
-            addError();
-        }
-
+        checkNote(E0);
     }//GEN-LAST:event_e_buttonActionPerformed
 
     private void eb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eb_buttonActionPerformed
-        if (currentNote==EF0){
-            addScore();
-        }else{
-            addError();
-        }
+        checkNote(EF0);
     }//GEN-LAST:event_eb_buttonActionPerformed
 
     private void c_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_buttonActionPerformed
-        if (currentNote==C0){
-            addScore();
-        }else{
-            addError();
-        }
+        checkNote(C0);
     }//GEN-LAST:event_c_buttonActionPerformed
 
     private void d_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_d_buttonActionPerformed
-        if (currentNote==D0){
-            addScore();
-        }else{
-            addError();
-        }
+        checkNote(D0);
     }//GEN-LAST:event_d_buttonActionPerformed
 
     private void db_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_db_buttonActionPerformed
-        if (currentNote==DF0){
-            addScore();
-        }else{
-            addError();
-        }
+        checkNote(DF0);
     }//GEN-LAST:event_db_buttonActionPerformed
 
     private void f_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_f_buttonActionPerformed
-        if (currentNote==F0){
-            addScore();
-        }else{
-            addError();
-        }
+        checkNote(F0);
     }//GEN-LAST:event_f_buttonActionPerformed
 
-    private void cb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_buttonActionPerformed
-        if (currentNote==CF0){
-            addScore();
-        }else{
-            addError();
-        }
-    }//GEN-LAST:event_cb_buttonActionPerformed
+    private void gb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gb_buttonActionPerformed
+        checkNote(GF0);
+    }//GEN-LAST:event_gb_buttonActionPerformed
 
     private void g_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_g_buttonActionPerformed
-        if (currentNote==G0){
-            addScore();
-        }else{
-            addError();
-        }
+        checkNote(G0);
     }//GEN-LAST:event_g_buttonActionPerformed
 
     private void ab_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ab_buttonActionPerformed
-        if (currentNote==AF0){
-            addScore();
-        }else{
-            addError();
-        }
+        checkNote(AF0);
     }//GEN-LAST:event_ab_buttonActionPerformed
 
     private void a_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_a_buttonActionPerformed
-        if (currentNote==A0){
-            addScore();
-        }else{
-            addError();
-        }
+        checkNote(A0);
     }//GEN-LAST:event_a_buttonActionPerformed
 
     private void bb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bb_buttonActionPerformed
-        if (currentNote==BF0){
-            addScore();
-        }else{
-            addError();
-        }
+        checkNote(BF0);
     }//GEN-LAST:event_bb_buttonActionPerformed
 
     private void b_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buttonActionPerformed
-        if (currentNote==B0){
+        checkNote(B0);
+    }//GEN-LAST:event_b_buttonActionPerformed
+
+    private void checkNote(int note) {
+        System.out.println(note);
+        if (currentNote==note){
             addScore();
         }else{
             addError();
         }
-    }//GEN-LAST:event_b_buttonActionPerformed
+    }
 
     /**
      * @param args the command line arguments
@@ -357,13 +372,13 @@ public class Game extends javax.swing.JFrame implements JMC {
     private javax.swing.JButton bb_button;
     private javax.swing.JLabel bpm_label;
     private javax.swing.JButton c_button;
-    private javax.swing.JButton cb_button;
     private javax.swing.JButton d_button;
     private javax.swing.JButton db_button;
     private javax.swing.JButton e_button;
     private javax.swing.JButton eb_button;
     private javax.swing.JButton f_button;
     private javax.swing.JButton g_button;
+    private javax.swing.JButton gb_button;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -458,5 +473,19 @@ public class Game extends javax.swing.JFrame implements JMC {
             this.currentIndex = ourNotes.length-1;
         }
         
+    }
+    
+    private class NoteAction extends AbstractAction {
+
+        int note;
+
+        NoteAction(int note) {
+            this.note=note;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            checkNote(note);
+        }
     }
 }
