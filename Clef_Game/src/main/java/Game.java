@@ -8,10 +8,19 @@
  *
  * @author alessia lombarda e andrea valota
  */
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
@@ -48,40 +57,40 @@ public class Game extends javax.swing.JFrame implements JMC {
         initComponents();
         
         c_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("Q"), "Q");
-        c_button.getActionMap().put("Q", new NoteAction(C0));
+        c_button.getActionMap().put("Q", new NoteAction(C4));
         
         db_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("2"), "2");
-        db_button.getActionMap().put("2", new NoteAction(DF0));
+        db_button.getActionMap().put("2", new NoteAction(DF4));
         
         d_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), "W");
-        d_button.getActionMap().put("W", new NoteAction(D0));
+        d_button.getActionMap().put("W", new NoteAction(D4));
         
         eb_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("3"), "3");
-        eb_button.getActionMap().put("3", new NoteAction(EF0));
+        eb_button.getActionMap().put("3", new NoteAction(EF4));
         
         e_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("E"), "E");
-        e_button.getActionMap().put("E", new NoteAction(E0));
+        e_button.getActionMap().put("E", new NoteAction(E4));
         
         f_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("R"), "R");
-        f_button.getActionMap().put("R", new NoteAction(F0));
+        f_button.getActionMap().put("R", new NoteAction(F4));
         
         gb_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("5"), "5");
-        gb_button.getActionMap().put("5", new NoteAction(GF0));
+        gb_button.getActionMap().put("5", new NoteAction(GF4));
         
         g_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("T"), "T");
-        g_button.getActionMap().put("T", new NoteAction(G0));
+        g_button.getActionMap().put("T", new NoteAction(G4));
         
         ab_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("6"), "6");
-        ab_button.getActionMap().put("6", new NoteAction(AF0));
+        ab_button.getActionMap().put("6", new NoteAction(AF4));
         
         a_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("Y"), "Y");
-        a_button.getActionMap().put("Y", new NoteAction(A0));
+        a_button.getActionMap().put("Y", new NoteAction(A4));
         
         bb_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("7"), "7");
-        bb_button.getActionMap().put("7", new NoteAction(BF0));
+        bb_button.getActionMap().put("7", new NoteAction(BF4));
         
         b_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("U"), "U");
-        b_button.getActionMap().put("U", new NoteAction(B0));
+        b_button.getActionMap().put("U", new NoteAction(B4));
         
         generateFirstNote();
     }
@@ -268,51 +277,63 @@ public class Game extends javax.swing.JFrame implements JMC {
     }// </editor-fold>//GEN-END:initComponents
 
     private void e_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_e_buttonActionPerformed
-        checkNote(E0);
+        playNote(E4);
+        checkNote(E4);
     }//GEN-LAST:event_e_buttonActionPerformed
 
     private void eb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eb_buttonActionPerformed
-        checkNote(EF0);
+        playNote(EF4);
+        checkNote(EF4);
     }//GEN-LAST:event_eb_buttonActionPerformed
 
     private void c_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_buttonActionPerformed
-        checkNote(C0);
+        playNote(C4);
+        checkNote(C4);
     }//GEN-LAST:event_c_buttonActionPerformed
 
     private void d_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_d_buttonActionPerformed
-        checkNote(D0);
+        playNote(D4);
+        checkNote(D4);
     }//GEN-LAST:event_d_buttonActionPerformed
 
     private void db_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_db_buttonActionPerformed
-        checkNote(DF0);
+        playNote(DF4);
+        checkNote(DF4);
     }//GEN-LAST:event_db_buttonActionPerformed
 
     private void f_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_f_buttonActionPerformed
-        checkNote(F0);
+        playNote(F4);
+        checkNote(F4);
     }//GEN-LAST:event_f_buttonActionPerformed
 
     private void gb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gb_buttonActionPerformed
-        checkNote(GF0);
+        playNote(GF4);
+        checkNote(GF4);
     }//GEN-LAST:event_gb_buttonActionPerformed
 
     private void g_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_g_buttonActionPerformed
-        checkNote(G0);
+        playNote(G4);
+        checkNote(G4);
     }//GEN-LAST:event_g_buttonActionPerformed
 
     private void ab_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ab_buttonActionPerformed
-        checkNote(AF0);
+        playNote(AF4);
+        checkNote(AF4);
     }//GEN-LAST:event_ab_buttonActionPerformed
 
     private void a_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_a_buttonActionPerformed
-        checkNote(A0);
+        playNote(A4);
+        checkNote(A4);
     }//GEN-LAST:event_a_buttonActionPerformed
 
     private void bb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bb_buttonActionPerformed
-        checkNote(BF0);
+        playNote(BF4);
+        checkNote(BF4);
     }//GEN-LAST:event_bb_buttonActionPerformed
 
     private void b_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buttonActionPerformed
-        checkNote(B0);
+        playNote(B4);
+        checkNote(B4);
     }//GEN-LAST:event_b_buttonActionPerformed
 
     private void checkNote(int note) {
@@ -402,8 +423,20 @@ public class Game extends javax.swing.JFrame implements JMC {
         score_label.setText(Integer.toString(--score));
     }
     
-    //generazione inizio livello
-    private void generateFirstNote() {
+    private void generateFirstNote() {     
+        //generazione inizio livello
+        /*TEXT AREA
+        try {
+            Font bravura = Font.createFont(Font.TRUETYPE_FONT, new File("font\\bravura.otf")); 
+            bravura = bravura.deriveFont(36f);
+            notes_textArea.setFont(bravura);
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
+        
+        notes_textArea.setText("\uD834\uDD1E");
+        notes_textArea.setText("\uD834\uDD5D");*/
+                
         int numNote = 3 - (this.level-1)/4;
         int grades = this.level;
         
@@ -475,6 +508,18 @@ public class Game extends javax.swing.JFrame implements JMC {
         
     }
     
+    private void playNote(int note){
+        Note n = new Note(note, EIGHTH_NOTE);
+        Phrase p = new Phrase(n);
+        Part part = new Part("piano", PIANO, 1);
+        Score score = new Score(part);
+        
+        part.addPhrase(p);
+        score.addPart(part);
+        
+        Play.midi(score);     
+    }
+    
     private class NoteAction extends AbstractAction {
 
         int note;
@@ -485,6 +530,7 @@ public class Game extends javax.swing.JFrame implements JMC {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            playNote(note);
             checkNote(note);
         }
     }
