@@ -40,6 +40,8 @@ public class Game extends javax.swing.JFrame implements JMC {
     private int currentNote;
     private ArrayList<Integer> pitch = new ArrayList<Integer>();
     
+    private NotePanel np;
+    
     private int[] easyNotes = {C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5};
     private int easyG = 4;
     private int currentIndex;
@@ -54,6 +56,8 @@ public class Game extends javax.swing.JFrame implements JMC {
     public Game(int level) {
         this.level = level;
         
+        this.np = new NotePanel();
+        add(this.np);
         initComponents();
         
         c_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("Q"), "Q");
@@ -467,6 +471,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         }
     
         this.currentNote = pitch.get(0);
+        this.np.setNotes(this.pitch);
         System.out.println(this.pitch.toString());
     }
     
@@ -489,6 +494,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         
         this.pitch.add(ourNotes[currentIndex]);
         this.currentNote = pitch.get(0);
+        this.np.setNotes(this.pitch);
     }
 
     private void generateIndex(int grades, int[] ourNotes) {

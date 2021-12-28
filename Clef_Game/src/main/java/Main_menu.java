@@ -6,7 +6,7 @@
 
 /**
  *
- * @author lomba
+ * @author alessia lombarda e andrea valota
  */
 public class Main_menu extends javax.swing.JFrame {
     
