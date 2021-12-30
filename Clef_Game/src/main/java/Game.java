@@ -8,46 +8,37 @@
  *
  * @author alessia lombarda e andrea valota
  */
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import jm.JMC;
-import jm.constants.*;
 import jm.music.data.*;
 import jm.util.Play;
-import jm.util.View;
 
 public class Game extends javax.swing.JFrame implements JMC {
     
-    private int level=1;
+    private int level;
     private int score=0;
     private int bpm;
     private int error=0;
-            
+    
+    private final int levelUp = 10;
+    
     private int currentNote;
-    private ArrayList<Integer> pitch = new ArrayList<Integer>();
+    private final ArrayList<Integer> pitch;
     
-    private NotePanel np;
+    private final NotePanel np;
     
-    private int[] easyNotes = {C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5};
-    private int easyG = 4;
+    private final int[] easyNotes = {C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5};
+    private final int easyG = 4;
     private int currentIndex;
     
-    private int[] mediumNotes = {C4,CS4,DF4,D4,DS4,EF4,E4,F4,FS4,GF4,G4,GS4,AF4,A4,AS4,BF4,B4,C5,CS5,DF5,D5,DS5,EF5,E5,F5,FS5,GF5,G5,GS5,AF5,A5,AS5,BF5,B5};
-    private int mediumG = 10;
+    private final int[] mediumNotes = {C4,CS4,DF4,D4,DS4,EF4,E4,F4,FS4,GF4,G4,GS4,AF4,A4,AS4,BF4,B4,C5,CS5,DF5,D5,DS5,EF5,E5,F5,FS5,GF5,G5,GS5,AF5,A5,AS5,BF5,B5};
+    private final int mediumG = 10;
     //creare difficultNotes con double accidentals
     
     /**
@@ -55,11 +46,12 @@ public class Game extends javax.swing.JFrame implements JMC {
      */
     public Game(int level) {
         this.level = level;
-        
+        this.pitch = new ArrayList<>();
         this.np = new NotePanel();
         add(this.np);
         initComponents();
         
+        level_label.setText(Integer.toString(this.level));
         c_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("Q"), "Q");
         c_button.getActionMap().put("Q", new NoteAction(C4));
         
@@ -342,11 +334,13 @@ public class Game extends javax.swing.JFrame implements JMC {
 
     private void checkNote(int note) {
         System.out.println(note);
-        if (currentNote==note){
+        
+        if ((currentNote%12)==(note%12)){
             addScore();
         }else{
             addError();
         }
+        
     }
 
     /**
@@ -416,31 +410,32 @@ public class Game extends javax.swing.JFrame implements JMC {
         //this.score++;
         score_label.setText(Integer.toString(++score));
         
-        //GENERA NOTA NUOVA SUCCESSIVA
-        generateNote();
+        if(this.score == this.levelUp){
+            this.score = 0;
+            this.level++;
+            this.pitch.clear();
+            generateFirstNote();
+            level_label.setText(Integer.toString(this.level));
+        } else{
+            generateNote();
+        }
+        
     }
 
     private void addError() {
         this.error++;
         //no score sottozero
         //AGGIUNGERE GESTIONE ERRORI
-        score_label.setText(Integer.toString(--score));
+        if(this.error>=5){
+            JOptionPane.showMessageDialog(this, "GAME OVER");
+            this.dispose();
+            new Main_menu().setVisible(true);
+        }  
     }
     
     private void generateFirstNote() {     
         //generazione inizio livello
-        /*TEXT AREA
-        try {
-            Font bravura = Font.createFont(Font.TRUETYPE_FONT, new File("font\\bravura.otf")); 
-            bravura = bravura.deriveFont(36f);
-            notes_textArea.setFont(bravura);
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-        }
-        
-        notes_textArea.setText("\uD834\uDD1E");
-        notes_textArea.setText("\uD834\uDD5D");*/
-                
+                        
         int numNote = 3 - (this.level-1)/4;
         int grades = this.level;
         
@@ -518,12 +513,12 @@ public class Game extends javax.swing.JFrame implements JMC {
         Note n = new Note(note, EIGHTH_NOTE);
         Phrase p = new Phrase(n);
         Part part = new Part("piano", PIANO, 1);
-        Score score = new Score(part);
+        Score s = new Score(part);
         
         part.addPhrase(p);
-        score.addPart(part);
+        s.addPart(part);
         
-        Play.midi(score);     
+        Play.midi(s);     
     }
     
     private class NoteAction extends AbstractAction {

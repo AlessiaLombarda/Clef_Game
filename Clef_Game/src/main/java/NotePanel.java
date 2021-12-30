@@ -1,11 +1,12 @@
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import static java.util.Map.entry;
 import javax.swing.JPanel;
@@ -24,6 +25,7 @@ import static jm.constants.Pitches.*;
 public class NotePanel extends JPanel{
     
     private ArrayList<Integer> pitch;
+    
     private final Map<Integer,Integer> notes = Map.ofEntries(
             entry(C4,150),
             entry(D4,140),
@@ -39,13 +41,15 @@ public class NotePanel extends JPanel{
             entry(G5,40),
             entry(A5,30),
             entry(B5,20));
-    private final String NOTE_UNICODE = "\uD834\uDD5F";
+    
+    private final String NOTE_UNICODE = "\uD834\uDD58";
+    
     //private final int[] note = {C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5};
     //private final int[] positions = {140,130,120,110,100,90,80,70,60,50,40,30,20,10};
     
     public NotePanel(){
         this.setBackground(Color.WHITE);
-        this.setSize(200,150);
+        this.setSize(200,170);
         this.setLocation(80, 50);
         this.setVisible(true);
     }
@@ -53,12 +57,13 @@ public class NotePanel extends JPanel{
     @Override
     protected void paintComponent(Graphics gr){
         super.paintComponent(gr);
-        ((Graphics2D)gr).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        Graphics2D g2D = (Graphics2D)gr;
+        g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Font font = new Font("font\\Bravura.otf", Font.PLAIN, 100);
-        gr.setFont(font);
-        drawStave(gr);
-        gr.drawString("\uD834\uDD1E", 0, 120);
-        drawNotes(gr);
+        g2D.setFont(font);
+        drawStave(g2D);
+        g2D.drawString("\uD834\uDD1E", 0, 120);
+        drawNotes(g2D);
     }
 
     private void drawStave(Graphics gr) {
@@ -72,11 +77,32 @@ public class NotePanel extends JPanel{
     }
 
     private void drawNotes(Graphics gr) {
+        
+        Graphics2D g2D = (Graphics2D)gr;
         Font font = new Font("font\\Bravura.otf", Font.PLAIN, 90);
-        gr.setFont(font);
-        int x = 50;
+        g2D.setFont(font);
+        int x = 70;
         for(int i=0; i<this.pitch.size(); i++){
-            gr.drawString(NOTE_UNICODE, x+(i*30),this.notes.get(this.pitch.get(i)));
+            
+            g2D.drawString(NOTE_UNICODE, x+(i*40),this.notes.get(this.pitch.get(i)));
+        
+            if(this.pitch.get(i)<D4){
+                System.out.println("Sotto d4");
+                int ll = (D4-this.pitch.get(i))/2;
+                for(int j=0; j<ll; j++){
+                    g2D.setStroke(new BasicStroke(2));
+                    g2D.drawLine(x+(i*40)-0, (j+7)*20, x+(i*40)+35, (j+7)*20);
+                }
+            } else if(this.pitch.get(i)>G5){
+                System.out.println("Sopra g5");
+                int ll = (this.pitch.get(i)-G5)/2;
+                for(int j=0; j<ll; j++){
+                    g2D.setStroke(new BasicStroke(2));
+                    g2D.drawLine(x+(i*40)-0, (1-j)*20, x+(i*40)+35, (1-j)*20);
+                }
+            }
         }
+        
+        
     }
 }
