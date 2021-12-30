@@ -11,6 +11,7 @@
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Random;
+import javax.sound.midi.Instrument;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -518,7 +519,8 @@ public class Game extends javax.swing.JFrame implements JMC {
         part.addPhrase(p);
         s.addPart(part);
         
-        Play.midi(s);     
+        Play.midi(s); 
+        //Play.audio(n,);
     }
     
     private class NoteAction extends AbstractAction {
