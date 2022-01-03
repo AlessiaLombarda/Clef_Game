@@ -1,4 +1,6 @@
+package com.clef_game;
 
+//import com.clef_game.Game.Clef;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -24,6 +26,7 @@ import static jm.constants.Pitches.*;
 public class NotePanel extends JPanel{
     
     private ArrayList<Integer> pitch;
+    private ArrayList<Clef> clef;
     
     private final Map<Integer,Integer> notes = Map.ofEntries(
             entry(A3,190),
@@ -47,17 +50,15 @@ public class NotePanel extends JPanel{
     
     private final String NOTE_UNICODE = "\uD834\uDD58";
     
-    private final int Y_SHIFT = 20;
-    private final int X_SHIFT = 40;
-    private final int LL_SPAN = 35;
-    
-    //private final int[] note = {C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5};
-    //private final int[] positions = {140,130,120,110,100,90,80,70,60,50,40,30,20,10};
+    private final int Y_SHIFT = 20; //shift between lines
+    private final int X_SHIFT = 40; //shift between notes
+    private final int CLEF_SHIFT = 70; //offset from clef
+    private final int LL_SPAN = 35; //horizontal shift between ledger lines 
     
     public NotePanel(){
         this.setBackground(Color.WHITE);
-        this.setSize(200,195);
-        this.setLocation(80, 34);
+        this.setSize(260,195);
+        this.setLocation(50, 34);
         this.setVisible(true);
     }
     
@@ -66,10 +67,9 @@ public class NotePanel extends JPanel{
         super.paintComponent(gr);
         Graphics2D g2D = (Graphics2D)gr;
         g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        Font font = new Font("font\\Bravura.otf", Font.PLAIN, 100);
+        Font font = new Font("font\\Bravura.otf", Font.PLAIN, 105);
         g2D.setFont(font);
         drawStave(g2D);
-        g2D.drawString("\uD834\uDD1E", 0, 140);
         drawNotes(g2D);
     }
 
@@ -78,48 +78,60 @@ public class NotePanel extends JPanel{
             gr.drawLine(0, (i+3)*Y_SHIFT, this.getWidth(), (i+3)*Y_SHIFT);
     }
     
-    public void setNotes(ArrayList<Integer> pitch){
+    public void setNotes(ArrayList<Integer> pitch, ArrayList<Clef> clef){
         this.pitch = pitch;
+        this.clef = clef;
         this.repaint();
     }
 
     private void drawNotes(Graphics gr) {
         
-        /*TEST NOTE ARRAY
-        this.pitch.clear();
-        this.pitch.add(G4);
-        this.pitch.add(C6);
-        this.pitch.add(A3);*/
-        
         Graphics2D g2D = (Graphics2D)gr;
-        Font font = new Font("font\\Bravura.otf", Font.PLAIN, 90);
-        g2D.setFont(font);
-        int x = 70;
-        int shift = 0;
+        Font font = new Font("font\\Bravura.otf", Font.PLAIN, 100);
+        g2D.setFont(font);        
+        
+        int x = 0;
+        
+        int shift = 0; //offset for small suggested notes
+        int shift_clef = 0;
         for(int i=0; i<this.pitch.size(); i++){
+            
+            System.out.println(this.clef.get(i).getName());
             
             //special case for suggested notes
             if (i>=1){
                 font = new Font("font\\Bravura.otf", Font.PLAIN, 70);
                 g2D.setFont(font);
+                x+= 3;
                 shift = 3;
+                shift_clef = 11;
+                
+            }   
+            
+            if(i>=1 && this.clef.get(i).equals(this.clef.get(i-1))){
+                x+=30;
+            }else{
+                g2D.drawString(this.clef.get(i).toString(), x, this.clef.get(i).getShift()-shift_clef);
+                x+=CLEF_SHIFT;
             }
             
-            g2D.drawString(NOTE_UNICODE, x+(i*X_SHIFT)+shift,this.notes.get(this.pitch.get(i))-shift);
+            g2D.drawString(NOTE_UNICODE, x,this.notes.get(this.pitch.get(i))-shift);
         
             if(this.pitch.get(i)<D4){
                 int ll = (D4-this.pitch.get(i))/2;
                 for(int j=0; j<ll; j++){
                     g2D.setStroke(new BasicStroke(2));
-                    g2D.drawLine(x+(i*X_SHIFT), (j+8)*Y_SHIFT, x+(i*X_SHIFT)+LL_SPAN, (j+8)*Y_SHIFT);
+                    g2D.drawLine(x, (j+8)*Y_SHIFT, x+LL_SPAN, (j+8)*Y_SHIFT);
                 }
             } else if(this.pitch.get(i)>G5){
-                int ll = (this.pitch.get(i)-G5-1)/2;
+                int ll = (this.pitch.get(i)-G5+1)/3;
                 for(int j=0; j<ll; j++){
                     g2D.setStroke(new BasicStroke(2));
-                    g2D.drawLine(x+(i*X_SHIFT), (2-j)*Y_SHIFT, x+(i*X_SHIFT)+LL_SPAN, (2-j)*Y_SHIFT);
+                    g2D.drawLine(x, (2-j)*Y_SHIFT, x+LL_SPAN, (2-j)*Y_SHIFT);
                 }
             }
+            
+            x+=X_SHIFT;
         }
         
         

@@ -8,6 +8,8 @@
  *
  * @author alessia lombarda e andrea valota
  */
+package com.clef_game;
+
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Random;
@@ -26,28 +28,31 @@ public class Game extends javax.swing.JFrame implements JMC {
     private int score=0;
     private int bpm;
     private int error=0;
-    
+    private Clef lastClef;
+    private Clef currentClef;
+    private int clefChanges;
+    private int currentNote; 
     private final int levelUp = 10;
-    
-    private int currentNote;
+   
     private final ArrayList<Integer> pitch;
-    
+    private final ArrayList<Clef> clef;
     private final NotePanel np;
     
-    private final int[] easyNotes = {C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5};
-    private final int easyG = 4;
-    private int currentIndex;
-    
-    private final int[] mediumNotes = {C4,CS4,DF4,D4,DS4,EF4,E4,F4,FS4,GF4,G4,GS4,AF4,A4,AS4,BF4,B4,C5,CS5,DF5,D5,DS5,EF5,E5,F5,FS5,GF5,G5,GS5,AF5,A5,AS5,BF5,B5};
-    private final int mediumG = 10;
-    //creare difficultNotes con double accidentals
+    private final int[] notes = {E3,F3,G3,A3,B3,C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5,C6,D6,E6,F6};
+    private final int BASEG = 9;
+    private final int BASEC = 12;
+    private final int BASEF = 15;
+    private int lastIndex;
     
     /**
      * Creates new form Game
      */
     public Game(int level) {
         this.level = level;
+        this.clefChanges = 11-this.level;
         this.pitch = new ArrayList<>();
+        this.clef = new ArrayList<>();
+        this.lastClef = new Clef("TREBLE");
         this.np = new NotePanel();
         add(this.np);
         initComponents();
@@ -121,9 +126,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         level_label = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(385, 480));
         setMinimumSize(new java.awt.Dimension(385, 480));
-        setPreferredSize(new java.awt.Dimension(385, 480));
         setResizable(false);
         setSize(new java.awt.Dimension(385, 480));
         getContentPane().setLayout(null);
@@ -334,9 +337,15 @@ public class Game extends javax.swing.JFrame implements JMC {
     }//GEN-LAST:event_b_buttonActionPerformed
 
     private void checkNote(int note) {
-        System.out.println(note);
+        int i;
+        for(i=0; i<this.notes.length; i++){
+            if(this.currentNote==this.notes[i])
+                break;
+        }
         
-        if ((currentNote%12)==(note%12)){
+        int shiftedNote = this.notes[i+currentClef.getShiftFromTreble()];
+        System.out.println(note+" "+shiftedNote);
+        if ((shiftedNote%12)==(note%12)){
             addScore();
         }else{
             addError();
@@ -408,13 +417,24 @@ public class Game extends javax.swing.JFrame implements JMC {
 
     private void addScore() {
         
-        //this.score++;
-        score_label.setText(Integer.toString(++score));
+        score_label.setText(Integer.toString(++this.score));
         
         if(this.score == this.levelUp){
             this.score = 0;
+            score_label.setText(Integer.toString(this.score));
             this.level++;
+            this.clefChanges = 11 - this.level;
             this.pitch.clear();
+            this.clef.clear();
+                
+            if(this.level>=11){
+                JOptionPane.showMessageDialog(this, "YOU WIN!");
+                this.dispose();
+                new Main_menu().setVisible(true);
+            }
+            
+            JOptionPane.showMessageDialog(this, "LEVEL UP!");
+            
             generateFirstNote();
             level_label.setText(Integer.toString(this.level));
         } else{
@@ -440,57 +460,85 @@ public class Game extends javax.swing.JFrame implements JMC {
         int numNote = 3 - (this.level-1)/4;
         int grades = this.level;
         
-        //add first G4
-        this.pitch.add(G4);
-        
-        int[] ourNotes;
-        int ourG;
-        
-        if(this.level<5){
-            ourNotes = easyNotes;
-            ourG = easyG;
-        } else if(this.level<9){
-            ourNotes = mediumNotes;
-            ourG = mediumG;
-        } else {
-            //sostituire con difficultNotes
-            ourNotes = easyNotes;
-            ourG = easyG;
+        //add first clef
+        this.clef.add(this.lastClef);
+        switch(this.lastClef.getName()){
+            case "FRENCH":    
+            case "TREBLE":  this.pitch.add(G4);
+                            this.lastIndex = BASEG;
+                            break;
+                                
+            case "SOPRANO":    
+            case "MEZZO_SOPRANO":
+            case "ALTO":
+            case "TENOR":
+            case "BARITONE_C":  this.pitch.add(C5);
+                                this.lastIndex = BASEC;
+                                break;
+                                    
+            case "BARITONE_F":    
+            case "BASS":   
+            case "SUBBASS": this.pitch.add(F4);
+                            this.lastIndex = BASEF;
+                            break;                                            
         }
         
-        this.currentIndex = ourG;
-        
-        //sistema per livelli non facili
         for(int i=0; i<numNote-1; i++){         
-            generateIndex(grades, ourNotes);
-            this.pitch.add(ourNotes[currentIndex]);
+            generateIndex(grades, notes);
+            this.pitch.add(this.notes[this.lastIndex]);
+            this.clef.add(this.lastClef);
         }
     
-        this.currentNote = pitch.get(0);
-        this.np.setNotes(this.pitch);
+        this.currentNote = this.pitch.get(0);
+        this.currentClef = this.clef.get(0);
+        this.np.setNotes(this.pitch, this.clef);
         System.out.println(this.pitch.toString());
     }
     
     private void generateNote(){
-        int[] ourNotes;
-        
-        if(this.level<5)
-            ourNotes = easyNotes;
-        else if(this.level<9)
-            ourNotes = mediumNotes;
-        else {
-            //sostituire con difficultNotes
-            ourNotes = easyNotes;
-        }
-        
+         
         int grades = this.level;
         this.pitch.remove(0);
-    
-        generateIndex(grades, ourNotes);
+        this.clef.remove(0);
+        int numHints = 3 - (this.level-1)/4 - 1;
         
-        this.pitch.add(ourNotes[currentIndex]);
-        this.currentNote = pitch.get(0);
-        this.np.setNotes(this.pitch);
+        if(((this.score+numHints)%this.clefChanges)==0){
+            //extract randomly new clef and set this.lastClef
+            Clef c = Clef.getRandomClef();
+            
+            while(c.equals(this.lastClef)){
+                c = Clef.getRandomClef();
+            }
+            this.lastClef = c;
+            
+            //get correct lastIndex
+            switch(this.lastClef.getName()){
+                case "FRENCH":    
+                case "TREBLE":  this.lastIndex = BASEG;
+                                break;
+                                
+                case "SOPRANO":    
+                case "MEZZO_SOPRANO":
+                case "ALTO":
+                case "TENOR":
+                case "BARITONE_C":  this.lastIndex = BASEC;
+                                    break;
+                                    
+                case "BARITONE_F":    
+                case "BASS":   
+                case "SUBBASS":   this.lastIndex = BASEF;
+                                  break;                                            
+            }          
+            
+        }
+        
+        generateIndex(grades, notes);
+        this.pitch.add(this.notes[lastIndex]);
+        this.clef.add(this.lastClef);
+        this.currentNote = this.pitch.get(0);
+        this.currentClef = this.clef.get(0);
+        this.np.setNotes(this.pitch, this.clef);
+        
     }
 
     private void generateIndex(int grades, int[] ourNotes) {
@@ -498,14 +546,14 @@ public class Game extends javax.swing.JFrame implements JMC {
         int low = -grades;
         int high = grades+1;
         int res = r.nextInt(high-low)+low;
-        this.currentIndex = currentIndex+res;
+        this.lastIndex = lastIndex+res;
             
-        if(this.currentIndex<0){
-            this.currentIndex = 0;
+        if(this.lastIndex<3){
+            this.lastIndex = 3;
         }
             
-        if(this.currentIndex>ourNotes.length-1){
-            this.currentIndex = ourNotes.length-1;
+        if(this.lastIndex>ourNotes.length-4){
+            this.lastIndex = ourNotes.length-4;
         }
         
     }
