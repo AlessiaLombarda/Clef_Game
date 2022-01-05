@@ -36,8 +36,10 @@ public class Game extends javax.swing.JFrame implements JMC {
    
     private final ArrayList<Integer> pitch;
     private final ArrayList<Clef> clef;
+    private final ArrayList<String> accidental;
     private final NotePanel np;
     
+    private final String[] accidentals = {"NATURAL","SHARP","FLAT","DOUBLE_SHARP","DOUBLE_FLAT"};
     private final int[] notes = {E3,F3,G3,A3,B3,C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5,C6,D6,E6,F6};
     private final int BASEG = 9;
     private final int BASEC = 12;
@@ -52,6 +54,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.clefChanges = 11-this.level;
         this.pitch = new ArrayList<>();
         this.clef = new ArrayList<>();
+        this.accidental = new ArrayList<>();
         this.lastClef = new Clef("TREBLE");
         this.np = new NotePanel();
         add(this.np);
@@ -344,7 +347,23 @@ public class Game extends javax.swing.JFrame implements JMC {
         }
         
         int shiftedNote = this.notes[i+currentClef.getShiftFromTreble()];
-        System.out.println(note+" "+shiftedNote);
+        switch(this.accidental.get(0)){
+            case "NATURAL":
+                            break;
+            case "SHARP":
+                            shiftedNote++;
+                            break;
+            case "FLAT":
+                            shiftedNote--;
+                            break;
+            case "DOUBLE_SHARP":
+                            shiftedNote+=2;
+                            break;
+            case "DOUBLE_FLAT":
+                            shiftedNote-=2;
+                            break;
+        }
+        System.out.println(note+" "+shiftedNote+""+this.accidental.get(0));
         if ((shiftedNote%12)==(note%12)){
             addScore();
         }else{
@@ -424,8 +443,6 @@ public class Game extends javax.swing.JFrame implements JMC {
             score_label.setText(Integer.toString(this.score));
             this.level++;
             this.clefChanges = 11 - this.level;
-            this.pitch.clear();
-            this.clef.clear();
                 
             if(this.level>=11){
                 JOptionPane.showMessageDialog(this, "YOU WIN!");
@@ -456,6 +473,10 @@ public class Game extends javax.swing.JFrame implements JMC {
     
     private void generateFirstNote() {     
         //generazione inizio livello
+        
+        this.pitch.clear();
+        this.clef.clear();
+        this.accidental.clear();
                         
         int numNote = 3 - (this.level-1)/4;
         int grades = this.level;
@@ -482,16 +503,32 @@ public class Game extends javax.swing.JFrame implements JMC {
                             this.lastIndex = BASEF;
                             break;                                            
         }
+        this.accidental.add("NATURAL");
         
         for(int i=0; i<numNote-1; i++){         
             generateIndex(grades, notes);
             this.pitch.add(this.notes[this.lastIndex]);
             this.clef.add(this.lastClef);
+            
+            if(this.level<=4){
+                this.accidental.add("NATURAL");
+            }else if(this.level>4 && this.level<9){
+                Random r = new Random();
+                int high = 3;
+                int res = r.nextInt(high);
+                this.accidental.add(this.accidentals[res]);
+            } else {
+                Random r = new Random();
+                int high = this.accidentals.length;
+                int res = r.nextInt(high);
+                this.accidental.add(this.accidentals[res]);
+            }
+            
         }
     
         this.currentNote = this.pitch.get(0);
         this.currentClef = this.clef.get(0);
-        this.np.setNotes(this.pitch, this.clef);
+        this.np.setNotes(this.pitch, this.clef, this.accidental);
         System.out.println(this.pitch.toString());
     }
     
@@ -500,6 +537,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         int grades = this.level;
         this.pitch.remove(0);
         this.clef.remove(0);
+        this.accidental.remove(0);
         int numHints = 3 - (this.level-1)/4 - 1;
         
         if(((this.score+numHints)%this.clefChanges)==0){
@@ -535,9 +573,26 @@ public class Game extends javax.swing.JFrame implements JMC {
         generateIndex(grades, notes);
         this.pitch.add(this.notes[lastIndex]);
         this.clef.add(this.lastClef);
+        
+        if(this.level<=4){
+            this.accidental.add("NATURAL");
+        }else if(this.level>4 && this.level<9){
+            Random r = new Random();
+            int high = 3;
+            int res = r.nextInt(high);
+            this.accidental.add(this.accidentals[res]);
+        } else {
+            Random r = new Random();
+            int high = this.accidentals.length;
+            int res = r.nextInt(high);
+            this.accidental.add(this.accidentals[res]);
+        }
+        
         this.currentNote = this.pitch.get(0);
         this.currentClef = this.clef.get(0);
-        this.np.setNotes(this.pitch, this.clef);
+        this.np.setNotes(this.pitch, this.clef, this.accidental);
+        
+        
         
     }
 

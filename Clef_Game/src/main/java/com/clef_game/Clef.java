@@ -13,7 +13,6 @@ import java.util.Random;
  */
 class Clef {
 
-    //private final String[] names = {"FRENCH", "TREBLE", "SOPRANO", "MEZZO_SOPRANO", "ALTO", "TENOR", "BARITONE_C", "BARITONE_F", "BASS", "SUBBASS"};
     private String unicode;
     private String name;
     private int shift;

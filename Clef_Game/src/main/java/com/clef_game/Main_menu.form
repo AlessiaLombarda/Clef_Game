@@ -23,48 +23,46 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
-              <Component id="jLabel2" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="134" max="-2" attributes="0"/>
-              <Component id="jLabel1" pref="133" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="135" max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="1" attributes="0">
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="level_selector" min="-2" pref="85" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="level_selector" min="-2" pref="85" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="play_button" min="-2" pref="632" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="119" max="-2" attributes="0"/>
-                      <Component id="play_button" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jLabel2" max="32767" attributes="0"/>
+                          <Component id="jLabel1" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="107" max="-2" attributes="0"/>
+              <EmptySpace pref="39" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" pref="34" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="play_button" min="-2" pref="37" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="level_selector" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
+              <Component id="jLabel2" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel2" pref="66" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -85,7 +83,8 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Questo gioco blabla"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Questo gioco ha lo scopo di facilitare l&apos;apprendimento del setticlavio.&lt;br/&gt;&#xa;Sulla parte superiore dello schermo compariranno delle note da suonare e le rispettive chiavi.&lt;br/&gt;&#xa;All&apos;aumentare dei livelli aumenteranno gli intervalli tra le note, la frequenza dei cambi di chiave e verranno introdotte alterazioni e tagli addizionali.&lt;br/&gt;&#xa;COMANDI DI GIOCO:&lt;br/&gt;&#xa;Per suonare l&apos;utente pu&#xf2; utilizzare due modalit&#xe0;&lt;br/&gt;&#xa;- i tasti digitali del pianoforte mostrati sullo schermo, che possono essere premuti tramite il mouse&lt;br/&gt;&#xa;-la tastiera del computer. Qui i tasti da Q a U corrispondono alle note naturali e 2,3,5,6,7 corrispondono alle note con alterazioni&lt;br/&gt;&#xa;&#xa;SPIEGAZIONE BPM&#xa;&lt;/html&gt;"/>
+        <Property name="autoscrolls" type="boolean" value="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
