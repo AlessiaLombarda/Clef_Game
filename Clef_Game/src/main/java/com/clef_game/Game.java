@@ -1,19 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author alessia lombarda e andrea valota
- */
 package com.clef_game;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Random;
-import javax.sound.midi.Instrument;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -22,45 +12,77 @@ import jm.JMC;
 import jm.music.data.*;
 import jm.util.Play;
 
+/**
+ * 
+ * @author alessia lombarda
+ * @author andrea valota
+ * 
+ */
+
 public class Game extends javax.swing.JFrame implements JMC {
     
-    private int level;
-    private int score=0;
     private int bpm;
-    private int error=0;
+    private int level;
     private Clef lastClef;
-    private Clef currentClef;
-    private int clefChanges;
-    private int currentNote; 
-    private final int levelUp = 10;
-   
+    private int clefChanges; //number of NOTES between a clef change
+    private int lastIndex;
+    
+    private int points = 0;
+    private int error = 0;
+        
     private final ArrayList<Integer> pitch;
     private final ArrayList<Clef> clef;
     private final ArrayList<String> accidental;
+    
     private final NotePanel np;
     
-    private final String[] accidentals = {"NATURAL","SHARP","FLAT","DOUBLE_SHARP","DOUBLE_FLAT"};
-    private final int[] notes = {E3,F3,G3,A3,B3,C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5,C6,D6,E6,F6};
-    private final int BASEG = 9;
-    private final int BASEC = 12;
-    private final int BASEF = 15;
-    private int lastIndex;
+    private final String[] ACCIDENTALS = {"NATURAL","SHARP","FLAT","DOUBLE_SHARP","DOUBLE_FLAT"};
+    private final int[] NOTES = {E3,F3,G3,A3,B3,C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5,C6,D6,E6,F6};
+    private final int BASEG = 9; //index of G4 in array NOTES 
+    private final int BASEC = 12; //index of C5 in array NOTES 
+    private final int BASEF = 15; //index of F5 in array NOTES 
+    private final int LEVELUP = 10; //number of points necessary to level up
+    private final int MAX_ERRORS = 5; //maximum number of errors before game over
     
     /**
      * Creates new form Game
+     * @param level The level the game starts from
      */
     public Game(int level) {
+        //check level value
+        if(level<1||level>10){
+            level = 1;
+        }
+        
+        //set class attributes
         this.level = level;
         this.clefChanges = 11-this.level;
+        
         this.pitch = new ArrayList<>();
         this.clef = new ArrayList<>();
         this.accidental = new ArrayList<>();
+        
         this.lastClef = new Clef("TREBLE");
+        
+        //inizialization of NotePanel needed to draw the game interface
         this.np = new NotePanel();
+        np.setBackground(Color.WHITE);
         add(this.np);
+        np.setSize(300,195);
+        np.setLocation(30, 34);
+        np.setVisible(true);
+        
+        
+             
         initComponents();
         
+        //set background color
+        this.getContentPane().setBackground(new Color(102,153,255));
+        
+        
         level_label.setText(Integer.toString(this.level));
+        
+        //binding between keyboard buttons and digital piano buttons
         c_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("Q"), "Q");
         c_button.getActionMap().put("Q", new NoteAction(C4));
         
@@ -129,6 +151,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         level_label = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("GIOCO SETTICLAVIO");
         setMinimumSize(new java.awt.Dimension(385, 480));
         setResizable(false);
         setSize(new java.awt.Dimension(385, 480));
@@ -254,24 +277,31 @@ public class Game extends javax.swing.JFrame implements JMC {
         getContentPane().add(b_button);
         b_button.setBounds(310, 230, 50, 200);
 
+        jLabel1.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
         jLabel1.setText("Score:");
         getContentPane().add(jLabel1);
         jLabel1.setBounds(20, 10, 50, 20);
 
+        score_label.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
         score_label.setText("0");
         getContentPane().add(score_label);
         score_label.setBounds(80, 10, 30, 20);
 
+        jLabel2.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
         jLabel2.setText("BPM:");
         getContentPane().add(jLabel2);
         jLabel2.setBounds(280, 10, 40, 20);
+
+        bpm_label.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
         getContentPane().add(bpm_label);
         bpm_label.setBounds(320, 10, 30, 20);
 
+        jLabel3.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
         jLabel3.setText("Level:");
         getContentPane().add(jLabel3);
         jLabel3.setBounds(150, 10, 40, 20);
 
+        level_label.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
         level_label.setText("1");
         getContentPane().add(level_label);
         level_label.setBounds(200, 10, 30, 20);
@@ -339,39 +369,6 @@ public class Game extends javax.swing.JFrame implements JMC {
         checkNote(B4);
     }//GEN-LAST:event_b_buttonActionPerformed
 
-    private void checkNote(int note) {
-        int i;
-        for(i=0; i<this.notes.length; i++){
-            if(this.currentNote==this.notes[i])
-                break;
-        }
-        
-        int shiftedNote = this.notes[i+currentClef.getShiftFromTreble()];
-        switch(this.accidental.get(0)){
-            case "NATURAL":
-                            break;
-            case "SHARP":
-                            shiftedNote++;
-                            break;
-            case "FLAT":
-                            shiftedNote--;
-                            break;
-            case "DOUBLE_SHARP":
-                            shiftedNote+=2;
-                            break;
-            case "DOUBLE_FLAT":
-                            shiftedNote-=2;
-                            break;
-        }
-        System.out.println(note+" "+shiftedNote+""+this.accidental.get(0));
-        if ((shiftedNote%12)==(note%12)){
-            addScore();
-        }else{
-            addError();
-        }
-        
-    }
-
     /**
      * @param args the command line arguments
      */
@@ -398,17 +395,10 @@ public class Game extends javax.swing.JFrame implements JMC {
             java.util.logging.Logger.getLogger(Game.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                /*new Game(1).setVisible(true);
-                int[] pitch = {C0,B0,F0,A0};
-                double[] durations = {C,C,C,C};
-                Phrase phrase = new Phrase();
-                phrase.addNoteList(pitch,durations);
-                View.show(phrase);*/
             }
         });
     }
@@ -434,16 +424,63 @@ public class Game extends javax.swing.JFrame implements JMC {
     private javax.swing.JLabel score_label;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * This method check if the note selected by the user is correct and calls addScore if correct and addError otherwise
+     * @param note The user input note
+     */
+    private void checkNote(int note) {
+        int i;
+        //look for current note index in NOTES array
+        for(i=0; i<this.NOTES.length; i++){
+            if(this.pitch.get(0)==this.NOTES[i])
+                break;
+        }
+        
+        //compute note value in relation to the correct clef
+        int shiftedNote = this.NOTES[i+this.clef.get(0).getShiftFromTreble()];
+        
+        //modify note value in relation to accidentals
+        switch(this.accidental.get(0)){
+            
+            case "SHARP":
+                            shiftedNote++;
+                            break;
+            case "FLAT":
+                            shiftedNote--;
+                            break;
+            case "DOUBLE_SHARP":
+                            shiftedNote+=2;
+                            break;
+            case "DOUBLE_FLAT":
+                            shiftedNote-=2;
+                            break;
+        }
+        
+        //DELETE: System.out.println(note+" "+shiftedNote+""+this.accidental.get(0));
+        
+        //check if user input note is correct without considering octave
+        if ((shiftedNote%12)==(note%12)){
+            addScore();
+        }else{
+            addError();
+        }
+    }
+    
+    /**
+     * This method increment the score points, handle the levelup procedure and the win message
+     */
     private void addScore() {
         
-        score_label.setText(Integer.toString(++this.score));
+        score_label.setText(Integer.toString(++this.points));
         
-        if(this.score == this.levelUp){
-            this.score = 0;
-            score_label.setText(Integer.toString(this.score));
+        //check if score points has reached levelup value and reset points, labels, otherwise generate next note
+        if(this.points == this.LEVELUP){
+            this.points = 0;
+            score_label.setText(Integer.toString(this.points));
             this.level++;
             this.clefChanges = 11 - this.level;
-                
+            
+            //check if user wins
             if(this.level>=11){
                 JOptionPane.showMessageDialog(this, "YOU WIN!");
                 this.dispose();
@@ -452,37 +489,48 @@ public class Game extends javax.swing.JFrame implements JMC {
             
             JOptionPane.showMessageDialog(this, "LEVEL UP!");
             
+            //generate first notes of the new level
             generateFirstNote();
             level_label.setText(Integer.toString(this.level));
         } else{
             generateNote();
-        }
-        
+        }     
     }
 
+    /**
+     * This method increase the error count and handles the game over
+     */
     private void addError() {
         this.error++;
-        //no score sottozero
-        //AGGIUNGERE GESTIONE ERRORI
-        if(this.error>=5){
+        
+        if(this.error>=MAX_ERRORS){
             JOptionPane.showMessageDialog(this, "GAME OVER");
             this.dispose();
             new Main_menu().setVisible(true);
         }  
     }
     
+    /**
+     * This method generate the first notes of the level and associated clefs and accidentals; 
+     * the number of generated notes varies with respect to the level
+     */
     private void generateFirstNote() {     
-        //generazione inizio livello
-        
+               
         this.pitch.clear();
         this.clef.clear();
         this.accidental.clear();
-                        
-        int numNote = 3 - (this.level-1)/4;
-        int grades = this.level;
+        
+        //define how many notes to generate w.r.t. the level: 
+        //level 1-4: 3 notes
+        //level 5-8: 2 notes
+        //level 9-10: 1 note
+        int numNote = 3 - (this.level-1)/4; 
+        int grades = this.level; //maximum interval between notes
         
         //add first clef
         this.clef.add(this.lastClef);
+        
+        //set first note
         switch(this.lastClef.getName()){
             case "FRENCH":    
             case "TREBLE":  this.pitch.add(G4);
@@ -503,45 +551,55 @@ public class Game extends javax.swing.JFrame implements JMC {
                             this.lastIndex = BASEF;
                             break;                                            
         }
+        
+        //set first accidental
         this.accidental.add("NATURAL");
         
+        //generate needed remaining notes
         for(int i=0; i<numNote-1; i++){         
-            generateIndex(grades, notes);
-            this.pitch.add(this.notes[this.lastIndex]);
+            generateIndex(grades);
+            this.pitch.add(this.NOTES[this.lastIndex]);
             this.clef.add(this.lastClef);
+            
+            //Single accidentals are allowed from level 5, double accidentals from level 9
+            Random r = new Random();
             
             if(this.level<=4){
                 this.accidental.add("NATURAL");
             }else if(this.level>4 && this.level<9){
-                Random r = new Random();
                 int high = 3;
                 int res = r.nextInt(high);
-                this.accidental.add(this.accidentals[res]);
+                this.accidental.add(this.ACCIDENTALS[res]);
             } else {
-                Random r = new Random();
-                int high = this.accidentals.length;
+                int high = this.ACCIDENTALS.length;
                 int res = r.nextInt(high);
-                this.accidental.add(this.accidentals[res]);
+                this.accidental.add(this.ACCIDENTALS[res]);
             }
             
         }
-    
-        this.currentNote = this.pitch.get(0);
-        this.currentClef = this.clef.get(0);
+        //passes the notes to the notepanel component
         this.np.setNotes(this.pitch, this.clef, this.accidental);
-        System.out.println(this.pitch.toString());
+        //DELETE: System.out.println(this.pitch.toString());
     }
     
+    /**
+     * This method generate step by step the required random notes;
+     * if required this method handles the clef change
+     */
     private void generateNote(){
          
         int grades = this.level;
+        
         this.pitch.remove(0);
         this.clef.remove(0);
         this.accidental.remove(0);
+        
+        //compute number of hints to determine clef change
         int numHints = 3 - (this.level-1)/4 - 1;
         
-        if(((this.score+numHints)%this.clefChanges)==0){
-            //extract randomly new clef and set this.lastClef
+        //clef change every 11-level notes
+        if(((this.points+numHints)%this.clefChanges)==0){
+            //extract randomly new clef
             Clef c = Clef.getRandomClef();
             
             while(c.equals(this.lastClef)){
@@ -570,49 +628,59 @@ public class Game extends javax.swing.JFrame implements JMC {
             
         }
         
-        generateIndex(grades, notes);
-        this.pitch.add(this.notes[lastIndex]);
+        //generate notes w.r.t. new clwf
+        generateIndex(grades);
+        this.pitch.add(this.NOTES[lastIndex]);
         this.clef.add(this.lastClef);
         
+        //set accidentals:
+        //level 1-4: natural notes only
+        //level 5-8: single accidentals allowed 
+        //level 1-4: double accidentals allowed too
         if(this.level<=4){
             this.accidental.add("NATURAL");
         }else if(this.level>4 && this.level<9){
             Random r = new Random();
             int high = 3;
             int res = r.nextInt(high);
-            this.accidental.add(this.accidentals[res]);
+            this.accidental.add(this.ACCIDENTALS[res]);
         } else {
             Random r = new Random();
-            int high = this.accidentals.length;
+            int high = this.ACCIDENTALS.length;
             int res = r.nextInt(high);
-            this.accidental.add(this.accidentals[res]);
+            this.accidental.add(this.ACCIDENTALS[res]);
         }
-        
-        this.currentNote = this.pitch.get(0);
-        this.currentClef = this.clef.get(0);
-        this.np.setNotes(this.pitch, this.clef, this.accidental);
-        
-        
-        
-    }
 
-    private void generateIndex(int grades, int[] ourNotes) {
+        this.np.setNotes(this.pitch, this.clef, this.accidental);
+    }
+    
+    /**
+     * This method generate and set the index corresponding to the note to generate;
+     * it chooses notes among the ones in array NOTES
+     * @param grades The allowed interval between notes
+     */
+    private void generateIndex(int grades) {
         Random r = new Random();
         int low = -grades;
         int high = grades+1;
         int res = r.nextInt(high-low)+low;
         this.lastIndex = lastIndex+res;
-            
+        
+        //first and last three notes are not allowed; they're only used to handle clef changes
         if(this.lastIndex<3){
             this.lastIndex = 3;
         }
             
-        if(this.lastIndex>ourNotes.length-4){
-            this.lastIndex = ourNotes.length-4;
+        if(this.lastIndex > this.NOTES.length-4){
+            this.lastIndex = this.NOTES.length-4;
         }
         
     }
     
+    /**
+     * This method plays the notes given in input by the user
+     * @param note The note to play
+     */
     private void playNote(int note){
         Note n = new Note(note, EIGHTH_NOTE);
         Phrase p = new Phrase(n);
@@ -623,12 +691,11 @@ public class Game extends javax.swing.JFrame implements JMC {
         s.addPart(part);
         
         Play.midi(s); 
-        //Play.audio(n,);
     }
     
     private class NoteAction extends AbstractAction {
 
-        int note;
+        int note; //the note corresponding to the pressed button
 
         NoteAction(int note) {
             this.note=note;

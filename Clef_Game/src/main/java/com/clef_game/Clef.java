@@ -1,26 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.clef_game;
 
 import java.util.Random;
 
 /**
- *
- * @author lomba
+ * 
+ * @author alessia lombarda
+ * @author andrea valota
+ * 
  */
+
 class Clef {
 
     private String unicode;
     private String name;
-    private int shift;
-    private int shiftFromTreble;
+    private int shift; //vertical shift to define note y-position 
+    private int shiftFromTreble; //note shift from treble clef to encode notes in new clef 
     
+    /** Creates a clef with the specified name
+     * 
+     * @param clef The clef's name
+     */
     public Clef(String clef){
-        this.name = clef;
-        switch(name){
+        
+        switch(clef){
             case "FRENCH":  this.unicode = "\uD834\uDD1E";
                             this.shift = 160;
                             this.shiftFromTreble = 2;
@@ -73,8 +76,14 @@ class Clef {
                             
             default: throw new IllegalArgumentException();                                   
         }
+        
+        this.name = clef;
     }
     
+    /**
+     * This method is used to get a random clef among the ten possible clefs
+     * @return The randomly generated clef
+     */
     public static Clef getRandomClef() {
         
         String[] names = {"FRENCH", "TREBLE", "SOPRANO", "MEZZO_SOPRANO", "ALTO", "TENOR", "BARITONE_C", "BARITONE_F", "BASS", "SUBBASS"};
@@ -87,30 +96,52 @@ class Clef {
         return new Clef(s);   
     }
     
+    /**
+     * This method returns the clef name
+     * @return The clef name as a String
+     */
     public String getName(){
         return this.name;
     }
     
+    /**
+     * This method returns the note shift from treble clef to encode notes in new clef 
+     * @return The clef shift (number of notes) from notes in treble clef
+     */
     public int getShiftFromTreble(){
         return this.shiftFromTreble;
     }
     
+    /**
+     * This method returns the clef vertical shift to define note y-position 
+     * @return The clef vertical shift
+     */
+    int getShift() {
+        return this.shift;
+    }
+    
+    /**
+     * This method returns the clef unicode
+     * @return The clef unicode
+     */
     @Override
     public String toString(){
         return this.unicode;
     }
     
+    /**
+     * This method returns whether two clefs are equal or not
+     * @param j The object to compare with the Clef
+     * @return true if the clefs are equals, false otherwise
+     * @throws IllegalArgumentExcepion if the oblect isn't a Clef
+     */
     @Override
-    public boolean equals(Object j){
+    public boolean equals(Object j) throws IllegalArgumentException{
         if(j instanceof Clef){
             return this.getName().equals(((Clef)j).getName());
         } else {
             throw new IllegalArgumentException();
         }
     }        
-    
-    int getShift() {
-        return this.shift;
-    }
     
 }

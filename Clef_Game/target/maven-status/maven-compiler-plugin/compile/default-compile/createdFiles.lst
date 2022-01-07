@@ -1,8 +1,8 @@
 com\clef_game\Game$4.class
-com\clef_game\Game$14.class
 com\clef_game\Game$13.class
 com\clef_game\Game$2.class
 com\clef_game\Game$12.class
+com\clef_game\Clef.class
 com\clef_game\Game$3.class
 com\clef_game\Game.class
 com\clef_game\Game$1.class
@@ -15,7 +15,6 @@ com\clef_game\Game$11.class
 com\clef_game\Game$6.class
 com\clef_game\Game$NoteAction.class
 com\clef_game\Game$9.class
-com\clef_game\Game$Clef.class
 com\clef_game\Main_menu$2.class
 com\clef_game\Main_menu$1.class
 com\clef_game\Game$10.class
