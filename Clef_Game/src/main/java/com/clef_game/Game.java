@@ -151,7 +151,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         level_label = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("GIOCO SETTICLAVIO");
+        setTitle("Clef Game");
         setMinimumSize(new java.awt.Dimension(385, 480));
         setResizable(false);
         setSize(new java.awt.Dimension(385, 480));
