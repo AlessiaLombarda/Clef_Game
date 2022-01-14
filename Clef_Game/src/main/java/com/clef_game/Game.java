@@ -4,13 +4,20 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.midi.Instrument;
+import javax.sound.midi.MidiChannel;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Synthesizer;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import jm.JMC;
 import jm.music.data.*;
-import jm.util.Play;
+
 
 /**
  * 
@@ -44,6 +51,8 @@ public class Game extends javax.swing.JFrame implements JMC {
     private final int LEVELUP = 10; //number of points necessary to level up
     private final int MAX_ERRORS = 5; //maximum number of errors before game over
     
+    
+    final MidiChannel[] mc;
     /**
      * Creates new form Game
      * @param level The level the game starts from
@@ -63,6 +72,19 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.accidental = new ArrayList<>();
         
         this.lastClef = new Clef("TREBLE");
+     
+        Synthesizer synth;
+        try {
+            
+            synth = MidiSystem.getSynthesizer();
+            synth.open();
+            mc = synth.getChannels();
+            Instrument[] instr = synth.getDefaultSoundbank().getInstruments();
+            synth.loadInstrument(instr[90]);
+        
+        } catch (MidiUnavailableException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         //inizialization of NotePanel needed to draw the game interface
         this.np = new NotePanel();
@@ -71,9 +93,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         np.setSize(300,195);
         np.setLocation(30, 34);
         np.setVisible(true);
-        
-        
-             
+           
         initComponents();
         
         //set background color
@@ -189,6 +209,7 @@ public class Game extends javax.swing.JFrame implements JMC {
 
         c_button.setBackground(new java.awt.Color(255, 255, 255));
         c_button.setFocusable(false);
+        c_button.setName("c"); // NOI18N
         c_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 c_buttonActionPerformed(evt);
@@ -310,62 +331,74 @@ public class Game extends javax.swing.JFrame implements JMC {
     }// </editor-fold>//GEN-END:initComponents
 
     private void e_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_e_buttonActionPerformed
-        playNote(E4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(E4,300);
         checkNote(E4);
     }//GEN-LAST:event_e_buttonActionPerformed
 
     private void eb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eb_buttonActionPerformed
-        playNote(EF4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(EF4,300);
         checkNote(EF4);
     }//GEN-LAST:event_eb_buttonActionPerformed
 
     private void c_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_buttonActionPerformed
-        playNote(C4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(C4,300);
         checkNote(C4);
     }//GEN-LAST:event_c_buttonActionPerformed
 
     private void d_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_d_buttonActionPerformed
-        playNote(D4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(D4,300);    
         checkNote(D4);
     }//GEN-LAST:event_d_buttonActionPerformed
 
     private void db_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_db_buttonActionPerformed
-        playNote(DF4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(DF4,300);
         checkNote(DF4);
     }//GEN-LAST:event_db_buttonActionPerformed
 
     private void f_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_f_buttonActionPerformed
-        playNote(F4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(F4,300);
         checkNote(F4);
     }//GEN-LAST:event_f_buttonActionPerformed
 
     private void gb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gb_buttonActionPerformed
-        playNote(GF4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(GF4,300);
         checkNote(GF4);
     }//GEN-LAST:event_gb_buttonActionPerformed
 
     private void g_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_g_buttonActionPerformed
-        playNote(G4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(G4,300);
         checkNote(G4);
     }//GEN-LAST:event_g_buttonActionPerformed
 
     private void ab_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ab_buttonActionPerformed
-        playNote(AF4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(AF4,300);
         checkNote(AF4);
     }//GEN-LAST:event_ab_buttonActionPerformed
 
     private void a_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_a_buttonActionPerformed
-        playNote(A4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(A4,300);
         checkNote(A4);
     }//GEN-LAST:event_a_buttonActionPerformed
 
     private void bb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bb_buttonActionPerformed
-        playNote(BF4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(BF4,300);
         checkNote(BF4);
     }//GEN-LAST:event_bb_buttonActionPerformed
 
     private void b_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buttonActionPerformed
-        playNote(B4);
+        mc[0].allSoundOff();
+        mc[0].noteOn(B4,300);
         checkNote(B4);
     }//GEN-LAST:event_b_buttonActionPerformed
 
@@ -681,17 +714,11 @@ public class Game extends javax.swing.JFrame implements JMC {
      * This method plays the notes given in input by the user
      * @param note The note to play
      */
-    private void playNote(int note){
+    /*private void playNote(int note){
         Note n = new Note(note, EIGHTH_NOTE);
-        Phrase p = new Phrase(n);
-        Part part = new Part("piano", PIANO, 1);
-        Score s = new Score(part);
-        
-        part.addPhrase(p);
-        s.addPart(part);
-        
-        Play.midi(s); 
-    }
+        //Play.midi(n); 
+        //alza la note giusta
+    }*/
     
     private class NoteAction extends AbstractAction {
 
@@ -703,7 +730,8 @@ public class Game extends javax.swing.JFrame implements JMC {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            playNote(note);
+            mc[0].allSoundOff();
+            mc[0].noteOn(note,300);
             checkNote(note);
         }
     }
