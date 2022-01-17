@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.midi.Instrument;
@@ -35,13 +37,17 @@ public class Game extends javax.swing.JFrame implements JMC {
     private int lastIndex;
     
     private int points = 0;
+    private int generatedNotes = 0;
     private int error = 0;
+    private boolean incorrect = false;
+    private boolean correct = false;
         
     private final ArrayList<Integer> pitch;
     private final ArrayList<Clef> clef;
     private final ArrayList<String> accidental;
     
     private final NotePanel np;
+    private Timer timer;
     
     private final String[] ACCIDENTALS = {"NATURAL","SHARP","FLAT","DOUBLE_SHARP","DOUBLE_FLAT"};
     private final int[] NOTES = {E3,F3,G3,A3,B3,C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5,C6,D6,E6,F6};
@@ -57,7 +63,7 @@ public class Game extends javax.swing.JFrame implements JMC {
      * Creates new form Game
      * @param level The level the game starts from
      */
-    public Game(int level) {
+    public Game(int level, int bpm) {
         //check level value
         if(level<1||level>10){
             level = 1;
@@ -66,6 +72,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         //set class attributes
         this.level = level;
         this.clefChanges = 11-this.level;
+        this.bpm = bpm;
         
         this.pitch = new ArrayList<>();
         this.clef = new ArrayList<>();
@@ -99,8 +106,8 @@ public class Game extends javax.swing.JFrame implements JMC {
         //set background color
         this.getContentPane().setBackground(new Color(102,153,255));
         
-        
         level_label.setText(Integer.toString(this.level));
+        bpm_label.setText(Integer.toString(this.bpm));
         
         //binding between keyboard buttons and digital piano buttons
         c_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("Q"), "Q");
@@ -492,10 +499,12 @@ public class Game extends javax.swing.JFrame implements JMC {
         //DELETE: System.out.println(note+" "+shiftedNote+""+this.accidental.get(0));
         
         //check if user input note is correct without considering octave
-        if ((shiftedNote%12)==(note%12)){
+        if ((shiftedNote%12)==(note%12) && !correct){
             addScore();
+            correct = true;
         }else{
             addError();
+            incorrect = true;
         }
     }
     
@@ -508,7 +517,9 @@ public class Game extends javax.swing.JFrame implements JMC {
         
         //check if score points has reached levelup value and reset points, labels, otherwise generate next note
         if(this.points == this.LEVELUP){
+            this.timer.cancel();
             this.points = 0;
+            this.generatedNotes = 0;
             score_label.setText(Integer.toString(this.points));
             this.level++;
             this.clefChanges = 11 - this.level;
@@ -525,9 +536,15 @@ public class Game extends javax.swing.JFrame implements JMC {
             //generate first notes of the new level
             generateFirstNote();
             level_label.setText(Integer.toString(this.level));
-        } else{
+            
+            if(this.level==5 || this.level==9){
+                this.bpm+=10;
+                bpm_label.setText(Integer.toString(this.bpm));
+            }
+            
+        }/* else{
             generateNote();
-        }     
+        }*/     
     }
 
     /**
@@ -537,6 +554,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.error++;
         
         if(this.error>=MAX_ERRORS){
+            this.timer.cancel();
             JOptionPane.showMessageDialog(this, "GAME OVER");
             this.dispose();
             new Main_menu().setVisible(true);
@@ -613,6 +631,21 @@ public class Game extends javax.swing.JFrame implements JMC {
         //passes the notes to the notepanel component
         this.np.setNotes(this.pitch, this.clef, this.accidental);
         //DELETE: System.out.println(this.pitch.toString());
+        
+        this.generatedNotes += numNote;
+        this.correct = false;
+        this.incorrect = false;
+        
+        this.timer = new Timer();
+        this.timer.scheduleAtFixedRate(new TimerTask() { 
+            @Override
+            public void run() {
+                if(!incorrect && !correct){
+                    addError();
+                }
+                generateNote();
+            }
+        }, 60000/bpm, 60000/bpm);
     }
     
     /**
@@ -627,11 +660,12 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.clef.remove(0);
         this.accidental.remove(0);
         
+        //DELETE
         //compute number of hints to determine clef change
-        int numHints = 3 - (this.level-1)/4 - 1;
+       // int numHints = 3 - (this.level-1)/4 - 1;
         
         //clef change every 11-level notes
-        if(((this.points+numHints)%this.clefChanges)==0){
+        if((this.generatedNotes%this.clefChanges)==0){
             //extract randomly new clef
             Clef c = Clef.getRandomClef();
             
@@ -685,6 +719,9 @@ public class Game extends javax.swing.JFrame implements JMC {
         }
 
         this.np.setNotes(this.pitch, this.clef, this.accidental);
+        this.generatedNotes++;
+        this.correct = false;
+        this.incorrect = false;
     }
     
     /**
