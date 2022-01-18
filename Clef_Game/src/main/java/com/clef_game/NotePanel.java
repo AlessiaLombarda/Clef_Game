@@ -24,6 +24,7 @@ public class NotePanel extends JPanel{
     private ArrayList<Integer> pitch;
     private ArrayList<Clef> clef;
     private ArrayList<String> accidental;
+    private boolean change = true;
     
     //binding between notes and corresponding y-position in the panel 
     private final Map<Integer,Integer> notes = Map.ofEntries(
@@ -114,9 +115,7 @@ public class NotePanel extends JPanel{
         int shift_accidental_hints = 0;
         
         for(int i=0; i<this.pitch.size(); i++){
-            
-            //DELETE: System.out.println(this.clef.get(i).getName());
-            
+
             //special case for suggested notes
             if (i>=1){
                 font = new Font("font\\Bravura.otf", Font.PLAIN, 70);
@@ -131,6 +130,7 @@ public class NotePanel extends JPanel{
             if(i>=1 && this.clef.get(i).equals(this.clef.get(i-1))){
                 x+=X_SHIFT;
             }else{
+                g2D.setColor(Color.BLACK);
                 g2D.drawString(this.clef.get(i).toString(), x, this.clef.get(i).getShift()-shift_clef_hints);
                 x+=CLEF_SHIFT;
             }
@@ -143,6 +143,12 @@ public class NotePanel extends JPanel{
             }
             
             //draw the note: shift_hints will be 0 in case of first note and 3 otherwise
+            if((i%2)==0 ^ change){
+                g2D.setColor(Color.RED);
+            } else {
+                g2D.setColor(Color.BLACK);
+            }
+                
             g2D.drawString(NOTE_UNICODE, x,this.notes.get(this.pitch.get(i))-shift_hints);
             
             //draws ledger lines if pitch higher than G5 or lower than D4
@@ -191,6 +197,8 @@ public class NotePanel extends JPanel{
             
             x+=X_SHIFT;
         }
+        
+        change = !change;
         
         
     }

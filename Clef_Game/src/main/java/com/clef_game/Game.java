@@ -18,7 +18,6 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import jm.JMC;
-import jm.music.data.*;
 
 
 /**
@@ -49,6 +48,9 @@ public class Game extends javax.swing.JFrame implements JMC {
     private final NotePanel np;
     private Timer timer;
     
+    long start;
+    long end;
+    
     private final String[] ACCIDENTALS = {"NATURAL","SHARP","FLAT","DOUBLE_SHARP","DOUBLE_FLAT"};
     private final int[] NOTES = {E3,F3,G3,A3,B3,C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5,C6,D6,E6,F6};
     private final int BASEG = 9; //index of G4 in array NOTES 
@@ -59,6 +61,7 @@ public class Game extends javax.swing.JFrame implements JMC {
     
     
     final MidiChannel[] mc;
+
     /**
      * Creates new form Game
      * @param level The level the game starts from
@@ -79,19 +82,6 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.accidental = new ArrayList<>();
         
         this.lastClef = new Clef("TREBLE");
-     
-        Synthesizer synth;
-        try {
-            
-            synth = MidiSystem.getSynthesizer();
-            synth.open();
-            mc = synth.getChannels();
-            Instrument[] instr = synth.getDefaultSoundbank().getInstruments();
-            synth.loadInstrument(instr[90]);
-        
-        } catch (MidiUnavailableException ex) {
-            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-        }
         
         //inizialization of NotePanel needed to draw the game interface
         this.np = new NotePanel();
@@ -146,6 +136,19 @@ public class Game extends javax.swing.JFrame implements JMC {
         b_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("U"), "U");
         b_button.getActionMap().put("U", new NoteAction(B4));
         
+        Synthesizer synth;
+        try {
+            
+            synth = MidiSystem.getSynthesizer();
+            synth.open();
+            mc = synth.getChannels();
+            Instrument[] instr = synth.getDefaultSoundbank().getInstruments();
+            synth.loadInstrument(instr[90]);
+        
+        } catch (MidiUnavailableException ex) {
+            JOptionPane.showMessageDialog(this, "Errore MIDI", "ERRORE", JOptionPane.ERROR_MESSAGE);
+        }
+        
         generateFirstNote();
     }
 
@@ -179,6 +182,7 @@ public class Game extends javax.swing.JFrame implements JMC {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Clef Game");
+        setLocation(new java.awt.Point(550, 150));
         setMinimumSize(new java.awt.Dimension(385, 480));
         setResizable(false);
         setSize(new java.awt.Dimension(385, 480));
@@ -496,8 +500,6 @@ public class Game extends javax.swing.JFrame implements JMC {
                             break;
         }
         
-        //DELETE: System.out.println(note+" "+shiftedNote+""+this.accidental.get(0));
-        
         //check if user input note is correct without considering octave
         if ((shiftedNote%12)==(note%12) && !correct){
             addScore();
@@ -513,10 +515,19 @@ public class Game extends javax.swing.JFrame implements JMC {
      */
     private void addScore() {
         
-        score_label.setText(Integer.toString(++this.points));
+        this.points++;
+        
+        this.end = System.currentTimeMillis();
+        long elapsedTime = end - start;
+        if(elapsedTime <= 60000/(bpm*2)){
+            this.points++;
+        }    
+            
+        score_label.setText(Integer.toString(this.points));
+        
         
         //check if score points has reached levelup value and reset points, labels, otherwise generate next note
-        if(this.points == this.LEVELUP){
+        if(this.points >= this.LEVELUP){
             this.timer.cancel();
             this.points = 0;
             this.generatedNotes = 0;
@@ -630,7 +641,6 @@ public class Game extends javax.swing.JFrame implements JMC {
         }
         //passes the notes to the notepanel component
         this.np.setNotes(this.pitch, this.clef, this.accidental);
-        //DELETE: System.out.println(this.pitch.toString());
         
         this.generatedNotes += numNote;
         this.correct = false;
@@ -644,8 +654,9 @@ public class Game extends javax.swing.JFrame implements JMC {
                     addError();
                 }
                 generateNote();
+                start = System.currentTimeMillis();
             }
-        }, 60000/bpm, 60000/bpm);
+        }, 2000, 60000/bpm);
     }
     
     /**
@@ -659,10 +670,6 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.pitch.remove(0);
         this.clef.remove(0);
         this.accidental.remove(0);
-        
-        //DELETE
-        //compute number of hints to determine clef change
-       // int numHints = 3 - (this.level-1)/4 - 1;
         
         //clef change every 11-level notes
         if((this.generatedNotes%this.clefChanges)==0){
