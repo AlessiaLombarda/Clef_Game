@@ -54,8 +54,6 @@ public class Game extends javax.swing.JFrame implements JMC {
     private final String[] ACCIDENTALS = {"NATURAL","SHARP","FLAT","DOUBLE_SHARP","DOUBLE_FLAT"};
     private final int[] NOTES = {E3,F3,G3,A3,B3,C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5,C6,D6,E6,F6};
     private final int BASEG = 9; //index of G4 in array NOTES 
-    private final int BASEC = 12; //index of C5 in array NOTES 
-    private final int BASEF = 15; //index of F5 in array NOTES 
     private final int LEVELUP = 10; //number of points necessary to level up
     private final int MAX_ERRORS = 5; //maximum number of errors before game over
     
@@ -501,12 +499,12 @@ public class Game extends javax.swing.JFrame implements JMC {
         }
         
         //check if user input note is correct without considering octave
-        if ((shiftedNote%12)==(note%12) && !correct){
+        if (((shiftedNote%12)==(note%12)) && !this.correct){
+            this.correct = true;
             addScore();
-            correct = true;
         }else{
+            this.incorrect = true;
             addError();
-            incorrect = true;
         }
     }
     
@@ -544,8 +542,6 @@ public class Game extends javax.swing.JFrame implements JMC {
             
             JOptionPane.showMessageDialog(this, "LEVEL UP!");
             
-            //generate first notes of the new level
-            generateFirstNote();
             level_label.setText(Integer.toString(this.level));
             
             if(this.level==5 || this.level==9){
@@ -553,9 +549,9 @@ public class Game extends javax.swing.JFrame implements JMC {
                 bpm_label.setText(Integer.toString(this.bpm));
             }
             
-        }/* else{
-            generateNote();
-        }*/     
+            //generate first notes of the new level
+            generateFirstNote();
+        }     
     }
 
     /**
@@ -582,6 +578,9 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.clef.clear();
         this.accidental.clear();
         
+        this.correct = false;
+        this.incorrect = false;
+        
         //define how many notes to generate w.r.t. the level: 
         //level 1-4: 3 notes
         //level 5-8: 2 notes
@@ -594,23 +593,40 @@ public class Game extends javax.swing.JFrame implements JMC {
         
         //set first note
         switch(this.lastClef.getName()){
-            case "FRENCH":    
+            case "FRENCH":  this.pitch.add(E4);
+                            this.lastIndex = BASEG-2;
+                            break;  
             case "TREBLE":  this.pitch.add(G4);
                             this.lastIndex = BASEG;
                             break;
                                 
-            case "SOPRANO":    
+            case "SOPRANO": this.pitch.add(E4);
+                            this.lastIndex = BASEG-2;
+                            break;
             case "MEZZO_SOPRANO":
-            case "ALTO":
-            case "TENOR":
-            case "BARITONE_C":  this.pitch.add(C5);
-                                this.lastIndex = BASEC;
-                                break;
+                            this.pitch.add(G4);
+                            this.lastIndex = BASEG;
+                            break;
+            case "ALTO":    this.pitch.add(B4);
+                            this.lastIndex = BASEG+2;
+                            break;
+            case "TENOR":   this.pitch.add(D5);
+                            this.lastIndex = BASEG+4;
+                            break;
+            case "BARITONE_C":  
+                            this.pitch.add(F5);
+                            this.lastIndex = BASEG+6;
+                            break;
                                     
-            case "BARITONE_F":    
-            case "BASS":   
-            case "SUBBASS": this.pitch.add(F4);
-                            this.lastIndex = BASEF;
+            case "BARITONE_F":
+                            this.pitch.add(B4);
+                            this.lastIndex = BASEG+2;
+                            break;
+            case "BASS":    this.pitch.add(D5);
+                            this.lastIndex = BASEG+4;
+                            break;
+            case "SUBBASS": this.pitch.add(F5);
+                            this.lastIndex = BASEG+6;
                             break;                                            
         }
         
@@ -643,11 +659,9 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.np.setNotes(this.pitch, this.clef, this.accidental);
         
         this.generatedNotes += numNote;
-        this.correct = false;
-        this.incorrect = false;
-        
+
         this.timer = new Timer();
-        this.timer.scheduleAtFixedRate(new TimerTask() { 
+        this.timer.schedule(new TimerTask() { 
             @Override
             public void run() {
                 if(!incorrect && !correct){
@@ -656,7 +670,7 @@ public class Game extends javax.swing.JFrame implements JMC {
                 generateNote();
                 start = System.currentTimeMillis();
             }
-        }, 2000, 60000/bpm);
+        }, 2000, 60000/bpm); 
     }
     
     /**
@@ -683,21 +697,33 @@ public class Game extends javax.swing.JFrame implements JMC {
             
             //get correct lastIndex
             switch(this.lastClef.getName()){
-                case "FRENCH":    
+                case "FRENCH":  this.lastIndex = BASEG-2;
+                                break;  
                 case "TREBLE":  this.lastIndex = BASEG;
                                 break;
                                 
-                case "SOPRANO":    
+                case "SOPRANO": 
+                                this.lastIndex = BASEG-2;
+                                break;
                 case "MEZZO_SOPRANO":
-                case "ALTO":
-                case "TENOR":
-                case "BARITONE_C":  this.lastIndex = BASEC;
-                                    break;
+                                this.lastIndex = BASEG;
+                                break;
+                case "ALTO":    this.lastIndex = BASEG+2;
+                                break;
+                case "TENOR":   this.lastIndex = BASEG+4;
+                                break;
+                case "BARITONE_C":  
+                                this.lastIndex = BASEG+6;
+                                break;
                                     
-                case "BARITONE_F":    
-                case "BASS":   
-                case "SUBBASS":   this.lastIndex = BASEF;
-                                  break;                                            
+                case "BARITONE_F":
+                                this.lastIndex = BASEG+2;
+                                break;
+                case "BASS":    this.lastIndex = BASEG+4;
+                                break;
+                case "SUBBASS":   
+                                this.lastIndex = BASEG+6;
+                                break;                                            
             }          
             
         }
@@ -753,16 +779,6 @@ public class Game extends javax.swing.JFrame implements JMC {
         }
         
     }
-    
-    /**
-     * This method plays the notes given in input by the user
-     * @param note The note to play
-     */
-    /*private void playNote(int note){
-        Note n = new Note(note, EIGHTH_NOTE);
-        //Play.midi(n); 
-        //alza la note giusta
-    }*/
     
     private class NoteAction extends AbstractAction {
 
