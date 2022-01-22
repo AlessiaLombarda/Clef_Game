@@ -15,8 +15,8 @@ import static jm.constants.Pitches.*;
 
 /**
  * 
- * @author alessia lombarda
- * @author andrea valota
+ * @author Alessia Lombarda
+ * @author Andrea Valota
  * 
  */
 
@@ -25,7 +25,7 @@ public class NotePanel extends JPanel{
     private ArrayList<Integer> pitch;
     private ArrayList<Clef> clef;
     private ArrayList<String> accidental;
-    private boolean change = true;
+    private boolean change = true; //boolean variable used to switch the color of the notes
     
     //binding between notes and corresponding y-position in the panel 
     private final Map<Integer,Integer> notes = Map.ofEntries(
@@ -102,18 +102,17 @@ public class NotePanel extends JPanel{
      */
     private void drawNotes(Graphics2D g2D) {
         
-        //font, dimension for first note/clef/accidental
+        //font, dimension for first note and clef
         Font font = new Font("font\\Bravura.otf", Font.PLAIN, 100);
         g2D.setFont(font);        
         FontMetrics fm = g2D.getFontMetrics();
         
-        int x = 0; //x-position: it will be incremented through for loop to define correct x-position of eache symbol drawn
+        int x = 0; //x-position: it will be incremented through for loop to define correct x-position of each symbol drawn
         
         int shift_hints = 0; //offset for small suggested notes
-        int shift_clef_hints = 0;
+        int shift_clef_hints = 0; //offset for small suggested clefs
         
         for(int i=0; i<this.pitch.size(); i++){
-
             //special case for suggested notes
             if (i>=1){
                 font = new Font("font\\Bravura.otf", Font.PLAIN, 70);
@@ -128,12 +127,13 @@ public class NotePanel extends JPanel{
             if(i>=1 && this.clef.get(i).equals(this.clef.get(i-1))){
                 x+=X_SHIFT;
             }else{
+                //first clef is drawn here
                 g2D.setColor(Color.BLACK);
                 g2D.drawString(this.clef.get(i).toString(), x, this.clef.get(i).getShift()-shift_clef_hints);
                 x+=fm.stringWidth(this.clef.get(i).toString())+5;
             }
             
-            //draw the note: shift_hints will be 0 in case of first note and 3 otherwise
+            //change notes' color
             if((i%2)==0 ^ change){
                 g2D.setColor(Color.RED);
             } else {
@@ -145,7 +145,7 @@ public class NotePanel extends JPanel{
             g2D.setFont(font);
             fm = g2D.getFontMetrics();
             
-            //draw accidentals
+            //draw accidentals and shifts x position
             switch(this.accidental.get(i)){
                 case "SHARP":
                             g2D.drawString(SHARP_UNICODE, x,this.notes.get(this.pitch.get(i))+6);
@@ -165,19 +165,21 @@ public class NotePanel extends JPanel{
                             break;
             }
             
+            //set proper font to draw notes; a smaller font will be used for suggestions
             if(i>=1){
                 font = new Font("font\\Bravura.otf", Font.PLAIN, 70);
             }else{
                 font = new Font("font\\Bravura.otf", Font.PLAIN, 100);
             }
+            
             g2D.setFont(font);
             fm = g2D.getFontMetrics();
             
+            //draw the note: shift_hints will be 0 in case of first note and 3 otherwise
             g2D.drawString(NOTE_UNICODE, x,this.notes.get(this.pitch.get(i))-shift_hints);
             
             //draws ledger lines if pitch higher than G5 or lower than D4
             if(this.pitch.get(i)<D4){
-                
                 //compute number of ledger lines to draw
                 int ll = (D4-this.pitch.get(i))/2;
                 
@@ -199,12 +201,11 @@ public class NotePanel extends JPanel{
                 }
             }
             
+            //x shift to go beyond note
             x+=fm.stringWidth(NOTE_UNICODE);
         }
         
-        change = !change;
-        
-        
+        //switch boolean to change color
+        change = !change; 
     }
-
 }

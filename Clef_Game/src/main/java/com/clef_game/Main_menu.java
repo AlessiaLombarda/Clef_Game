@@ -5,8 +5,8 @@ import javax.swing.JOptionPane;
 
 /**
  * 
- * @author alessia lombarda
- * @author andrea valota
+ * @author Alessia Lombarda
+ * @author Andrea Valota
  * 
  */
 
@@ -54,12 +54,12 @@ public class Main_menu extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 30)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("CLEF GAME");
 
         jLabel2.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 14)); // NOI18N
-        jLabel2.setText("<html> Questo gioco ha lo scopo di facilitare l'apprendimento del setticlavio.<br/> Sulla parte superiore dello schermo compariranno delle note da suonare e le rispettive chiavi.<br/> All'aumentare dei livelli aumenteranno gli intervalli tra le note, la frequenza dei cambi di chiave e verranno introdotte alterazioni e tagli addizionali.<br/> SPIEGAZIONE BPM </html>");
+        jLabel2.setText("<html> Questo gioco ha lo scopo di facilitare l'apprendimento del setticlavio.<br/> \nSulla parte superiore dello schermo compariranno delle note da suonare e le rispettive chiavi.<br/> \nAll'aumentare dei livelli aumenteranno gli intervalli tra le note, la frequenza dei cambi di chiave e verranno introdotte alterazioni e tagli addizionali.<br/> \nPrima di iniziare viene chiesto di inserire il numero di BPM: le note verranno generate seguendo questo BPM, che si incrementerà ai livellli 5 e 9. <br/>\nSe il giocatore non suona nessuna nota e viene generata la nota successiva, questo sarà contato come errore. Dopo 5 errori il gioco termina.\n</html>");
         jLabel2.setAutoscrolls(true);
 
         jLabel3.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 18)); // NOI18N
@@ -108,11 +108,11 @@ public class Main_menu extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(play_button, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(play_button, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -122,7 +122,7 @@ public class Main_menu extends javax.swing.JFrame {
                         .addComponent(instruction_button, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(bpm_selector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .addComponent(jLabel2)
                 .addGap(12, 12, 12))
         );
 
@@ -143,7 +143,7 @@ public class Main_menu extends javax.swing.JFrame {
     }//GEN-LAST:event_play_buttonActionPerformed
 
     private void instruction_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instruction_buttonActionPerformed
-        JOptionPane.showMessageDialog(this, "COMANDI DI GIOCO:\n Per suonare l'utente può utilizzare due modalità\n - i tasti digitali del pianoforte mostrati sullo schermo, che possono essere premuti tramite il mouse\n -la tastiera del computer. Qui i tasti da Q a U corrispondono alle note naturali e 2,3,5,6,7 corrispondono alle note con alterazioni\n");
+        JOptionPane.showMessageDialog(this, "COMANDI DI GIOCO:\n Per suonare l'utente può utilizzare due modalità\n - i tasti digitali del pianoforte mostrati sullo schermo, che possono essere premuti tramite il mouse\n - la tastiera del computer. Qui i tasti da Q a U corrispondono alle note naturali e 2,3,5,6,7 corrispondono alle note con alterazioni\n");
     }//GEN-LAST:event_instruction_buttonActionPerformed
 
     /**

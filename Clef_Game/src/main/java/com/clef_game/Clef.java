@@ -5,21 +5,22 @@ import java.util.Random;
 
 /**
  * 
- * @author alessia lombarda
- * @author andrea valota
+ * @author Alessia Lombarda
+ * @author Andrea Valota
  * 
  */
 
 class Clef {
 
-    private String unicode;
-    private String name;
-    private int shift; //vertical shift to define note y-position 
-    private int shiftFromTreble; //note shift from treble clef to encode notes in new clef 
+    private final String unicode; //the unicode of the given clef
+    private final String name; //the common name of the given clef
+    private final int shift; //vertical shift to define note y-position 
+    private final int shiftFromTreble; //note shift from treble clef to encode notes in new clef 
     
     /** Creates a clef with the specified name
      * 
      * @param clef The clef's name
+     * @throws IllegalArgumentException if String clef is not a supported clef name
      */
     public Clef(String clef){
         

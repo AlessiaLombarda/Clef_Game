@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sound.midi.Instrument;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
@@ -19,11 +17,10 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import jm.JMC;
 
-
 /**
  * 
- * @author alessia lombarda
- * @author andrea valota
+ * @author Alessia Lombarda
+ * @author Andrea Valota
  * 
  */
 
@@ -31,15 +28,15 @@ public class Game extends javax.swing.JFrame implements JMC {
     
     private int bpm;
     private int level;
-    private Clef lastClef;
-    private int clefChanges; //number of NOTES between a clef change
-    private int lastIndex;
+    private Clef lastClef; //last generated clef
+    private int clefChanges; //number of notes between a clef change
+    private int lastIndex; //index in NOTES array of last generated note 
     
     private int points = 0;
-    private int generatedNotes = 0;
+    private int generatedNotes = 0; //number of notes generated in the current level till this moment
     private int error = 0;
-    private boolean incorrect = false;
-    private boolean correct = false;
+    private boolean incorrect = false; //set to true if the player makes an error
+    private boolean correct = false; //set to true if the player plays the correct note
         
     private final ArrayList<Integer> pitch;
     private final ArrayList<Clef> clef;
@@ -48,7 +45,8 @@ public class Game extends javax.swing.JFrame implements JMC {
     private final NotePanel np;
     private Timer timer;
     
-    long start;
+    //variables used to keep track of the user's response time
+    long start; 
     long end;
     
     private final String[] ACCIDENTALS = {"NATURAL","SHARP","FLAT","DOUBLE_SHARP","DOUBLE_FLAT"};
@@ -57,14 +55,15 @@ public class Game extends javax.swing.JFrame implements JMC {
     private final int LEVELUP = 10; //number of points necessary to level up
     private final int MAX_ERRORS = 5; //maximum number of errors before game over
     
-    
-    final MidiChannel[] mc;
+    final MidiChannel[] mc; //structure used to generate sounds
 
     /**
      * Creates new form Game
      * @param level The level the game starts from
+     * @param bpm The starting BPM rate
      */
     public Game(int level, int bpm) {
+        
         //check level value
         if(level<1||level>10){
             level = 1;
@@ -79,6 +78,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.clef = new ArrayList<>();
         this.accidental = new ArrayList<>();
         
+        //set initial clef
         this.lastClef = new Clef("TREBLE");
         
         //inizialization of NotePanel needed to draw the game interface
@@ -134,19 +134,18 @@ public class Game extends javax.swing.JFrame implements JMC {
         b_button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("U"), "U");
         b_button.getActionMap().put("U", new NoteAction(B4));
         
-        Synthesizer synth;
-        try {
-            
+        //initialization of the MIDI Synthesizer
+        Synthesizer synth = null;
+
+        try { 
             synth = MidiSystem.getSynthesizer();
             synth.open();
-            mc = synth.getChannels();
             Instrument[] instr = synth.getDefaultSoundbank().getInstruments();
             synth.loadInstrument(instr[90]);
-        
         } catch (MidiUnavailableException ex) {
             JOptionPane.showMessageDialog(this, "Errore MIDI", "ERRORE", JOptionPane.ERROR_MESSAGE);
         }
-        
+        mc = synth.getChannels();
         generateFirstNote();
     }
 
@@ -340,9 +339,9 @@ public class Game extends javax.swing.JFrame implements JMC {
     }// </editor-fold>//GEN-END:initComponents
 
     private void e_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_e_buttonActionPerformed
-        mc[0].allSoundOff();
-        mc[0].noteOn(E4,300);
-        checkNote(E4);
+        mc[0].allSoundOff(); //switchs off all previous notes
+        mc[0].noteOn(E4,300); //plays current note
+        checkNote(E4); //checks if the displayed note is equal to the given note
     }//GEN-LAST:event_e_buttonActionPerformed
 
     private void eb_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eb_buttonActionPerformed
@@ -499,11 +498,12 @@ public class Game extends javax.swing.JFrame implements JMC {
         }
         
         //check if user input note is correct without considering octave
+        //The note is considered as correct only the first time it is played since the note appeared
         if (((shiftedNote%12)==(note%12)) && !this.correct){
-            this.correct = true;
+            this.correct = true; //the note is correct
             addScore();
         }else{
-            this.incorrect = true;
+            this.incorrect = true; //mistake made
             addError();
         }
     }
@@ -515,6 +515,8 @@ public class Game extends javax.swing.JFrame implements JMC {
         
         this.points++;
         
+        //computation of user's response time; 
+        //if lower than half of the time between a note and the successive, bonus points are given
         this.end = System.currentTimeMillis();
         long elapsedTime = end - start;
         if(elapsedTime <= 60000/(bpm*2)){
@@ -523,10 +525,9 @@ public class Game extends javax.swing.JFrame implements JMC {
             
         score_label.setText(Integer.toString(this.points));
         
-        
         //check if score points has reached levelup value and reset points, labels, otherwise generate next note
         if(this.points >= this.LEVELUP){
-            this.timer.cancel();
+            this.timer.cancel(); //timer is stopped when the levelup message appears
             this.points = 0;
             this.generatedNotes = 0;
             score_label.setText(Integer.toString(this.points));
@@ -544,6 +545,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             
             level_label.setText(Integer.toString(this.level));
             
+            //bpm is increased by 10 at level 5 and 9
             if(this.level==5 || this.level==9){
                 this.bpm+=10;
                 bpm_label.setText(Integer.toString(this.bpm));
@@ -560,6 +562,7 @@ public class Game extends javax.swing.JFrame implements JMC {
     private void addError() {
         this.error++;
         
+        //game over
         if(this.error>=MAX_ERRORS){
             this.timer.cancel();
             JOptionPane.showMessageDialog(this, "GAME OVER");
@@ -573,11 +576,11 @@ public class Game extends javax.swing.JFrame implements JMC {
      * the number of generated notes varies with respect to the level
      */
     private void generateFirstNote() {     
-               
+        
+        //reset of all variables/structures
         this.pitch.clear();
         this.clef.clear();
         this.accidental.clear();
-        
         this.correct = false;
         this.incorrect = false;
         
@@ -659,7 +662,8 @@ public class Game extends javax.swing.JFrame implements JMC {
         this.np.setNotes(this.pitch, this.clef, this.accidental);
         
         this.generatedNotes += numNote;
-
+        
+        //creation of the timer to automatically generating notes at fixed rate (bpm)
         this.timer = new Timer();
         this.timer.schedule(new TimerTask() { 
             @Override
@@ -728,7 +732,7 @@ public class Game extends javax.swing.JFrame implements JMC {
             
         }
         
-        //generate notes w.r.t. new clwf
+        //generate notes w.r.t. new clef
         generateIndex(grades);
         this.pitch.add(this.NOTES[lastIndex]);
         this.clef.add(this.lastClef);
@@ -752,7 +756,9 @@ public class Game extends javax.swing.JFrame implements JMC {
         }
 
         this.np.setNotes(this.pitch, this.clef, this.accidental);
+        
         this.generatedNotes++;
+        
         this.correct = false;
         this.incorrect = false;
     }
@@ -780,6 +786,7 @@ public class Game extends javax.swing.JFrame implements JMC {
         
     }
     
+    //this class is used to make binding between keyboard keys and digital buttons
     private class NoteAction extends AbstractAction {
 
         int note; //the note corresponding to the pressed button
