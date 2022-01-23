@@ -11,6 +11,7 @@ To run the game the user should just download the code, compile it and run the M
 The user finds in the main menu:
 - the play button "GIOCA"
 - level selector
+- BPM selector
 - the game description (in italian)
 - an info button that shows the controls of the game "COMANDI" 
 
@@ -18,7 +19,8 @@ After selecting the level and pressing the play button the player will see a win
 - a panel that displays the notes to be played
 - a virtual piano keyboard
 
-To play the user can press the digital buttons using the mouse or use the keyboard bindings specified in the info button 
+To play the user can press the digital buttons using the mouse or use the keyboard bindings specified in the info button.
+The notes will appear at a rate based on the BPM and for each correct note the player will earn 1 point. The player earns 1 bonus point if the correct note is played following the BPM. 
 
 ## Game Rules
 This project has been developed based on the "Serious Games for Music Education" paper by Adriano Baratè, and Luca A. Ludovico [[1]](#1) and the game rules are the same as described in the paper
