@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import static java.util.Map.entry;
 import javax.swing.JPanel;
-import static jm.constants.Pitches.*;
+import jm.JMC;
 
 /**
  * 
@@ -20,7 +20,7 @@ import static jm.constants.Pitches.*;
  * 
  */
 
-public class NotePanel extends JPanel{
+public class NotePanel extends JPanel implements JMC{
     
     private ArrayList<Integer> pitch;
     private ArrayList<Clef> clef;
@@ -56,7 +56,7 @@ public class NotePanel extends JPanel{
     
     private final int Y_SHIFT = 20; //shift between lines
     private final int X_SHIFT = 40; //space after note
-    private final int LL_SPAN = 35; //horizontal shift_hints between ledger lines 
+    private final int LL_SPAN = 35; //horizontal width of ledger lines 
     
     @Override
     protected void paintComponent(Graphics gr){
@@ -64,10 +64,6 @@ public class NotePanel extends JPanel{
         super.paintComponent(gr);
         Graphics2D g2D = (Graphics2D)gr;
         g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        //set Bravura font to draw notes using unicode
-        Font font = new Font("font\\Bravura.otf", Font.PLAIN, 105);
-        g2D.setFont(font);
         
         drawStave(g2D);
         drawNotes(g2D);

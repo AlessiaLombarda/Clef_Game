@@ -46,8 +46,8 @@ public class Game extends javax.swing.JFrame implements JMC {
     private Timer timer;
     
     //variables used to keep track of the user's response time
-    long start; 
-    long end;
+    private long start; 
+    private long end;
     
     private final String[] ACCIDENTALS = {"NATURAL","SHARP","FLAT","DOUBLE_SHARP","DOUBLE_FLAT"};
     private final int[] NOTES = {E3,F3,G3,A3,B3,C4,D4,E4,F4,G4,A4,B4,C5,D5,E5,F5,G5,A5,B5,C6,D6,E6,F6};
@@ -55,7 +55,7 @@ public class Game extends javax.swing.JFrame implements JMC {
     private final int LEVELUP = 10; //number of points necessary to level up
     private final int MAX_ERRORS = 5; //maximum number of errors before game over
     
-    final MidiChannel[] mc; //structure used to generate sounds
+    private final MidiChannel[] mc; //structure used to generate sounds
 
     /**
      * Creates new form Game
